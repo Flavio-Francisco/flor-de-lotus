@@ -1,9 +1,9 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import BottomSheet from '@gorhom/bottom-sheet';
-import {BottomSheetProps} from '@gorhom/bottom-sheet/src/components/bottomSheet/types';
-import {Keyboard, View} from 'react-native';
-import {Button, Icon} from './styles';
+import { BottomSheetProps } from '@gorhom/bottom-sheet/src/components/bottomSheet/types';
+import { Keyboard, View } from 'react-native';
+import { Button, Icon } from './styles';
 
 interface IProps extends BottomSheetProps {
   children: React.ReactNode;
@@ -50,9 +50,12 @@ export const BottomSheetComponent = ({
         index={0}
         snapPoints={isOpenKeyboard ? ['100%'] : snapPoints}
         {...rest}>
-        <Button onPress={toggle}>
-          <Icon name="x"  />
-        </Button>
+        <View style={{ flex: 1 }}>
+          <Button onPress={toggle}>
+            <Icon name="x" />
+          </Button>
+        </View>
+
         {children}
       </BottomSheet>
     )

@@ -1,20 +1,30 @@
 
 import React, { useState } from 'react';
 
-import { Conteiner, ConteinerCard, Logo, Name } from './styles';
+import { Conteiner, ConteinerCard, Logo, Name, } from './styles';
 import { FlatList } from 'react-native-gesture-handler';
 import CardList from '../../components/CardList';
-import { BottomSheetComponent } from '../../components/BottomSheetComponent';
+
+import { AgendaProps } from '../../utils/Models';
+import ModalObs from '../../components/Modal';
+import { Modal } from 'react-native';
+
 
 export default function Home() {
-    const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
-    const handleCardPress = () => {
-        setIsBottomSheetOpen(true);
-    };
+    const [isModalOpen, setIsModalSheetOpen] = useState(false);
 
-    const handleBottomSheetToggle = () => {
-        setIsBottomSheetOpen(!isBottomSheetOpen);
+    const [selectedItem, setSelectedItem] = useState<AgendaProps>();
+    const handleCardPress = (item: AgendaProps) => {
+        setSelectedItem(item);
+        setIsModalSheetOpen(true);
+        console.log(selectedItem, isModalOpen);
+
     };
+    const closeModal = () => {
+        setIsModalSheetOpen(false);
+    }
+
+
 
     const FackData = [
         {
@@ -82,17 +92,29 @@ export default function Home() {
                 <FlatList
                     data={FackData}
                     keyExtractor={items => items.id}
-                    renderItem={items => <CardList name={items.item.name} date={items.item.date} procedure={items.item.procedure} onCardPress={handleCardPress} />}
+                    renderItem={items => <CardList name={items.item.name} date={items.item.date} procedure={items.item.procedure} onCardPress={() => handleCardPress(items.item)} />}
                 />
             </ConteinerCard>
-            <BottomSheetComponent
-                isOpen={isBottomSheetOpen}
-                toggle={handleBottomSheetToggle}
-                snapPoints={['95%', '5%']}
+            <Modal
+                animationType="slide"
+                transparent={false}
+                visible={isModalOpen}
+                onRequestClose={closeModal}
             >
-                {/* Conteúdo do seu modal */}
-                <Name >Conteúdo do Modal</Name>
-            </BottomSheetComponent>
+                <ModalObs
+                    date={selectedItem?.date}
+                    name={selectedItem?.name}
+                    procedure={selectedItem?.procedure}
+                    money={selectedItem?.money}
+                    note='Em nota, as Forças de Defesa de Israel chamaram o caso de "incidente" e disseram que aprenderam  com o episódio, mas afirmaram que seguirão em busca dos reféns ainda em poder do Hamas.
+
+                    "Enfatizamos que esta é uma zona de combate ativa na qual ocorreram combates contínuos nos últimos dias. Foram aprendidas lições imediatas do evento, que foram transmitidas a todas as tropas em terreno. Expressamos profundo pesar pelo trágico incidente, e enviamos às famílias as mais sinceras condolências. Nossa missão nacional é localizar os desaparecidos e devolver todos os reféns para casa", disse o Exército, em comunicado.
+                    
+                    O Exército de Israel não havia informado, até a última atualização desta reportagem, onde exatamente estavam os reféns no momento em que foram alvejados pelos soldados - há relatos de que a maior parte dos'
+                    taggert={isModalOpen} isVisible={false}
+                    onHide={closeModal}
+                />
+            </Modal>
         </Conteiner>
     );
 }

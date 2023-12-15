@@ -1,8 +1,9 @@
 export interface AgendaProps {
-  id?: string;
-  date: string;
-  name: string;
-  procedure: string;
-  money?: string;
-  note?: string;
+  id?: string|undefined;
+  date: string|undefined;
+  name: string|undefined;
+  procedure: string|undefined;
+  money?: string|undefined;
+  note?: string|undefined;
+  taggert?: boolean|undefined;
 }

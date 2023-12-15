@@ -1,4 +1,5 @@
 
+import { AgendaProps } from "../../utils/Models";
 import { Conteiner, Name, Procedure,Date } from "./styles";
 
 interface Iporops{
