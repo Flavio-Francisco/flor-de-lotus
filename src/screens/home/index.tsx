@@ -8,6 +8,7 @@ import CardList from '../../components/CardList';
 import { AgendaProps } from '../../utils/Models';
 import ModalObs from '../../components/Modal';
 import { Modal } from 'react-native';
+import { Title } from '../update/styles';
 
 
 export default function Home() {
@@ -88,6 +89,7 @@ export default function Home() {
     return (
         <Conteiner>
             <Logo source={require('../../../assets/logo.webp')} />
+            <Title>Horários agendados</Title>
             <ConteinerCard >
                 <FlatList
                     data={FackData}
@@ -111,7 +113,8 @@ export default function Home() {
                     "Enfatizamos que esta é uma zona de combate ativa na qual ocorreram combates contínuos nos últimos dias. Foram aprendidas lições imediatas do evento, que foram transmitidas a todas as tropas em terreno. Expressamos profundo pesar pelo trágico incidente, e enviamos às famílias as mais sinceras condolências. Nossa missão nacional é localizar os desaparecidos e devolver todos os reféns para casa", disse o Exército, em comunicado.
                     
                     O Exército de Israel não havia informado, até a última atualização desta reportagem, onde exatamente estavam os reféns no momento em que foram alvejados pelos soldados - há relatos de que a maior parte dos'
-                    taggert={isModalOpen} isVisible={false}
+                    taggert={isModalOpen} 
+                    isVisible={false}
                     onHide={closeModal}
                 />
             </Modal>
