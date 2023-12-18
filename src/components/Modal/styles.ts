@@ -2,9 +2,13 @@ import styled from "styled-components/native";
 import { thema } from "../../../thema";
 
 export const ButtomModal = styled.TouchableOpacity`
-  width: 80%;
-  height: 50px;
+  width: 60%;
+  height: 55px;
+  align-items:center;
+  justify-content:center;
   border-radius: 10px;
+  margin:20px;
+  margin-left:70px;
   background-color: ${thema.colors.pink};
 `;
 export const TextButtom = styled.Text`
@@ -16,10 +20,10 @@ export const TextButtom = styled.Text`
 
 export const ConteinerModal = styled.View`
   width: 90%;
-  height: 630px;
+  height: 680px;
   border-radius: 10px;
   margin-left: 15px;
-  margin-top: 30px;
+  margin-top: 10px;
   border: 1px ${thema.colors.pink};
 `;
 export const ConteinerData = styled.View`
@@ -38,6 +42,7 @@ export const ConteinerData2 = styled.ScrollView`
   margin-left: 12px;
   margin-top: 10px;
   padding: 5px;
+  border-radius: 10px;;;
   border: 1px ${thema.colors.pink};
 `;
 export const Title = styled.Text`

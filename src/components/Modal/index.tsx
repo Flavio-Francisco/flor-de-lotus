@@ -57,7 +57,6 @@ export default function ModalObs({
                 </ConteinerData>
                 <TextDataObs>Observações: </TextDataObs>
                 <ConteinerData2>
-
                     <Data>{note}</Data>
                 </ConteinerData2>
                 <ButtomModal onPress={hideModalHandler}>

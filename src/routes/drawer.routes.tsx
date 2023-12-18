@@ -6,6 +6,7 @@ import Add from "../screens/Add.tsx";
 import Home from "../screens/home";
 import { thema } from "../../thema.ts";
 import { SafeAreaView, View ,Image,Text} from "react-native";
+import Update from "../screens/update/index.tsx";
 
 
 
@@ -50,7 +51,7 @@ export default function Drawer() {
                 component={Home}
                 options={{
                     drawerIcon: ({ size, color }) => <Feather name="home" size={size} color={thema.colors.white} />,
-                    drawerLabel: "Início",
+                    drawerLabel: "Lista de Resevas",
                     drawerLabelStyle:{
                         color:thema.colors.white
                     }
@@ -68,6 +69,19 @@ export default function Drawer() {
                         color:thema.colors.white
                     }
                 }}
+            />
+                  <Screen
+                name="Atalizar Agendamento "
+                component={Update}
+                options={{
+                    drawerIcon: ({ size, color }) => <Feather name="upload-cloud" size={size} color={thema.colors.white} />,
+                    drawerLabel: "Atalizar Agendamento",
+                    drawerLabelStyle:{
+                        color:thema.colors.white
+                    }
+
+                }}
+
             />
         </Navigator>
     )

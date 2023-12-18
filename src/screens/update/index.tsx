@@ -1,21 +1,38 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import * as Yup from "yup";
+import { Formik } from "formik";
+import { useNavigation } from "@react-navigation/native";
 
+interface MyFormValues {
+    date: string;
+    name: string;
+    procedure: string;
+    money?: string;
+    note?: string;
+}
+
+const validationSchema = Yup.object().shape({
+    name: Yup.string()
+        .label('name'),
+
+    date: Yup.string()
+        .label('date'),
+
+    procedure: Yup.string()
+        .label('procedure'),
+
+    money: Yup.string()
+        .label('procedure'),
+    note: Yup.string()
+        .label('note'),
+
+
+});
 export default function Update() {
+    const navigation = useNavigation();
+    const FormValues: MyFormValues = { name: '', date: '', procedure: '', money: '' ,note: ''};
     return (
-        <View style={styles.container}>
-            <Text>home</Text>
-            <StatusBar style="auto" />
-        </View>
+        <>
+        </>
     );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-});
