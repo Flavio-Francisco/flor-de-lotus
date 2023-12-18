@@ -14,6 +14,8 @@ interface MyFormValues {
     note?: string | undefined;
     closeModal: () => void;
     isVisible?: boolean;
+    isOpenAlert: () => void;
+
 
 }
 
@@ -31,11 +33,14 @@ const validationSchema = Yup.object().shape({
         }),
 
 });
-export default function CardUpdate({ date, name, procedure, closeModal, isVisible, money, note }: MyFormValues) {
+export default function CardUpdate({ date, name, procedure, closeModal, isVisible, money, note ,isOpenAlert}: MyFormValues) {
     const navigation = useNavigation();
-    const FormValues: MyFormValues = { name: name, date: date, procedure: procedure, money: money, note: note, closeModal };
+    const FormValues: MyFormValues = { name: name, date: date, procedure: procedure, money: money, note: note, closeModal ,isOpenAlert};
     const hideModalHandler = () => {
         closeModal();
+    };
+    const handlerAlert = () => {
+        isOpenAlert();
     };
     return (
         <Formik
@@ -124,6 +129,7 @@ export default function CardUpdate({ date, name, procedure, closeModal, isVisibl
                     <ButtomSubmit onPress={() => {
                         handleSubmit();
                         hideModalHandler();
+                        handlerAlert()
                     }
                     }>
                         <TextSubmit >Atualizar</TextSubmit>

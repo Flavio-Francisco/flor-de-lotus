@@ -7,6 +7,8 @@ import { Conteiner, ConteinerCard, Logo, Title } from "./styles";
 import { FlatList, Modal } from "react-native";
 import CardList from "../../components/CardList";
 import CardUpdate from "../../components/CardUpdate";
+import AwesomeAlert from "react-native-awesome-alerts";
+import { thema } from "../../../thema";
 
 interface MyFormValues {
     date: string;
@@ -38,6 +40,15 @@ export default function Update() {
     const navigation = useNavigation();
     const FormValues: MyFormValues = { name: '', date: '', procedure: '', money: '' ,note: ''};
     const [isModalOpen, setIsModalSheetOpen] = useState(false);
+    const [showAlert, setShowAlert] = useState<boolean>(false);
+
+    const showAlertHandler = () => {
+        setShowAlert(true);
+    };
+
+    const hideAlertHandler = () => {
+        setShowAlert(false);
+    };
 
     const [selectedItem, setSelectedItem] = useState<AgendaProps>();
     const handleCardPress = (item: AgendaProps) => {
@@ -109,6 +120,28 @@ export default function Update() {
     ]
     return (
         <Conteiner>
+                  <AwesomeAlert
+                show={showAlert}
+                showProgress={false}
+                title="Atualizar Dados?"
+              
+                contentStyle={{ width: 300, height: 100,}}
+                closeOnTouchOutside={true}
+                titleStyle={{ fontSize: 22, textAlign: 'center' ,color: thema.colors.pink}}
+                messageStyle={{ fontSize: 20, color: thema.colors.pink }}
+                closeOnHardwareBackPress={false}
+                cancelButtonStyle={{ width: 100, alignItems: 'center', marginTop: 10, borderWidth: 1, borderColor: thema.colors.pink, }}
+                confirmButtonStyle={{ width: 100, alignItems: 'center', marginLeft: 25, }}
+                cancelButtonTextStyle={{ color: thema.colors.white }}
+                showCancelButton={true}
+                showConfirmButton={true}
+                confirmText="Sim"
+                confirmButtonColor={thema.colors.pink}
+                onConfirmPressed={hideAlertHandler}
+                cancelText="Não"
+                cancelButtonColor={thema.colors.pink}
+                onCancelPressed={hideAlertHandler}
+                />
             
             <Logo source={require('../../../assets/logo.webp')} />
             <Title>Atualizar agendamento</Title>
@@ -132,6 +165,7 @@ export default function Update() {
                     money={selectedItem?.money}
                     note={selectedItem?.note}
                     closeModal={closeModal}
+                    isOpenAlert={showAlertHandler}
                
                 />
             </Modal>

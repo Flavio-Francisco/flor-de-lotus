@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Modal, ScrollView, View, Button } from "react-native";
+import { AntDesign } from '@expo/vector-icons';
 import {
     ButtomModal,
+    ButtomModalDelete,
+    ConteinerButtom,
     ConteinerData,
     ConteinerData2,
     ConteinerDataview,
@@ -13,14 +15,16 @@ import {
     Title,
 } from "./styles";
 import { AgendaProps } from "../../utils/Models";
+import { thema } from "../../../thema";
 
 interface Ipros extends AgendaProps {
     isVisible: boolean;
     onHide: () => void;
+    deleteTime: () => void;
 }
 
 export default function ModalObs({
-
+    deleteTime,
     onHide,
     date,
     name,
@@ -30,6 +34,9 @@ export default function ModalObs({
 }: Ipros) {
     const hideModalHandler = () => {
         onHide();
+    };
+    const ModalHandlerDelete = () => {
+        deleteTime();
     };
 
 
@@ -59,9 +66,16 @@ export default function ModalObs({
                 <ConteinerData2>
                     <Data>{note}</Data>
                 </ConteinerData2>
-                <ButtomModal onPress={hideModalHandler}>
-                    <TextButtom>Fechar</TextButtom>
-                </ButtomModal>
+                <ConteinerButtom>
+                    <ButtomModal onPress={hideModalHandler}>
+                        <TextButtom>Fechar</TextButtom>
+                    </ButtomModal>
+                    <ButtomModalDelete  onPress={ModalHandlerDelete}>
+                        <AntDesign name="delete" size={24} color={thema.colors.white} />
+                        <TextButtom>Excluir</TextButtom>
+                    </ButtomModalDelete>
+                </ConteinerButtom>
+
             </ConteinerModal>
 
         </>

@@ -2,14 +2,26 @@ import styled from "styled-components/native";
 import { thema } from "../../../thema";
 
 export const ButtomModal = styled.TouchableOpacity`
-  width: 60%;
+  width: 40%;
   height: 55px;
-  align-items:center;
-  justify-content:center;
+  align-items: center;
+  justify-content: center;
   border-radius: 10px;
-  margin:20px;
-  margin-left:70px;
+  margin: 20px;
+  margin-left: 12px;
   background-color: ${thema.colors.pink};
+`;
+export const ButtomModalDelete = styled.TouchableOpacity`
+  flex-direction: row;
+  width: 40%;
+  height: 55px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  gap:5px;
+  margin: 20px;
+  margin-left: 12px;
+  background-color: ${thema.colors.violeta};
 `;
 export const TextButtom = styled.Text`
   font-size: 20px;
@@ -31,6 +43,11 @@ export const ConteinerData = styled.View`
   margin-left: 10px;
   margin-top: 10px;
 `;
+export const ConteinerButtom = styled.View`
+  flex-direction: row;
+  margin-left: 10px;
+  margin-top: 10px;
+`;
 export const ConteinerDataview = styled.View`
   flex: 1;
   margin-left: 10px;
@@ -39,10 +56,10 @@ export const ConteinerDataview = styled.View`
 export const ConteinerData2 = styled.ScrollView`
   flex: 1;
   width: 90%;
-  margin-left: 12px;
+  margin-left: 16px;
   margin-top: 10px;
   padding: 5px;
-  border-radius: 10px;;;
+  border-radius: 10px;
   border: 1px ${thema.colors.pink};
 `;
 export const Title = styled.Text`
@@ -64,8 +81,8 @@ export const TextDataObs = styled.Text`
   align-items: center;
   font-size: 20px;
   font-weight: bold;
-  margin-left:10px;
-  margin-top:5px;
+  margin-left: 10px;
+  margin-top: 5px;
   color: ${thema.colors.pink};
 `;
 export const Data = styled.Text`

@@ -9,10 +9,22 @@ import { AgendaProps } from '../../utils/Models';
 import ModalObs from '../../components/Modal';
 import { Modal } from 'react-native';
 import { Title } from '../update/styles';
+import AwesomeAlert from 'react-native-awesome-alerts';
+import { thema } from '../../../thema';
 
 
 export default function Home() {
     const [isModalOpen, setIsModalSheetOpen] = useState(false);
+    const [showAlert, setShowAlert] = useState<boolean>(false);
+
+    const showAlertHandler = () => {
+        setShowAlert(true);
+    };
+
+    const hideAlertHandler = () => {
+        setShowAlert(false);
+    };
+
 
     const [selectedItem, setSelectedItem] = useState<AgendaProps>();
     const handleCardPress = (item: AgendaProps) => {
@@ -88,6 +100,28 @@ export default function Home() {
 
     return (
         <Conteiner>
+             <AwesomeAlert
+                show={showAlert}
+                showProgress={false}
+                title="Excluir esse agendamento!"
+              
+                contentStyle={{ width: 300, height: 100,}}
+                closeOnTouchOutside={true}
+                titleStyle={{ fontSize: 22, textAlign: 'center' ,color: thema.colors.pink}}
+                messageStyle={{ fontSize: 20, color: thema.colors.pink }}
+                closeOnHardwareBackPress={false}
+                cancelButtonStyle={{ width: 100, alignItems: 'center', marginTop: 10, borderWidth: 1, borderColor: thema.colors.pink, }}
+                confirmButtonStyle={{ width: 100, alignItems: 'center', marginLeft: 25, }}
+                cancelButtonTextStyle={{ color: thema.colors.white }}
+                showCancelButton={true}
+                showConfirmButton={true}
+                confirmText="Sim"
+                confirmButtonColor={thema.colors.pink}
+                onConfirmPressed={hideAlertHandler}
+                cancelText="Não"
+                cancelButtonColor={thema.colors.pink}
+                onCancelPressed={hideAlertHandler}
+                />
             <Logo source={require('../../../assets/logo.webp')} />
             <Title>Horários agendados</Title>
             <ConteinerCard >
@@ -108,14 +142,11 @@ export default function Home() {
                     name={selectedItem?.name}
                     procedure={selectedItem?.procedure}
                     money={selectedItem?.money}
-                    note='Em nota, as Forças de Defesa de Israel chamaram o caso de "incidente" e disseram que aprenderam  com o episódio, mas afirmaram que seguirão em busca dos reféns ainda em poder do Hamas.
-
-                    "Enfatizamos que esta é uma zona de combate ativa na qual ocorreram combates contínuos nos últimos dias. Foram aprendidas lições imediatas do evento, que foram transmitidas a todas as tropas em terreno. Expressamos profundo pesar pelo trágico incidente, e enviamos às famílias as mais sinceras condolências. Nossa missão nacional é localizar os desaparecidos e devolver todos os reféns para casa", disse o Exército, em comunicado.
-                    
-                    O Exército de Israel não havia informado, até a última atualização desta reportagem, onde exatamente estavam os reféns no momento em que foram alvejados pelos soldados - há relatos de que a maior parte dos'
+                    note={selectedItem?.note}
                     taggert={isModalOpen} 
                     isVisible={false}
                     onHide={closeModal}
+                    deleteTime={showAlertHandler}
                 />
             </Modal>
         </Conteiner>
