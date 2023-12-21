@@ -7,6 +7,7 @@ import Home from "../screens/home";
 import { thema } from "../../thema.ts";
 import { SafeAreaView, View ,Image,Text} from "react-native";
 import Update from "../screens/update/index.tsx";
+import Stack from "./stak.routes.tsx";
 
 
 
@@ -47,7 +48,7 @@ export default function Drawer() {
         }}
         >
             <Screen
-                name="Agenda"
+                name="Home"
                 component={Home}
                 options={{
                     drawerIcon: ({ size, color }) => <Feather name="home" size={size} color={thema.colors.white} />,
@@ -83,6 +84,8 @@ export default function Drawer() {
                 }}
 
             />
+            
+        
         </Navigator>
     )
 }

@@ -1,5 +1,5 @@
 export interface AgendaProps {
-  id?: string|undefined;
+  id?: string;
   date: string|undefined;
   name: string|undefined;
   procedure: string|undefined;
