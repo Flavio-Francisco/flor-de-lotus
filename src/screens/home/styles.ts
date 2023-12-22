@@ -7,15 +7,16 @@ export const Conteiner = styled.View`
   justify-content: center;
 `;
 export const Logo = styled.Image`
-  width: 250px;
-  height: 150px;
-  
+  width: 200px;
+  height: 200px;
+  margin-top:70px;
 `;
 export const ConteinerCard = styled.View`
   width: 90%;
   height: 580px;
   border-radius: 10px;
   margin: 10px;
+  
   margin-bottom: 5px;
 `;
 export const Name = styled.Text`

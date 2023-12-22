@@ -9,6 +9,7 @@ import CardUpdate from "../../components/CardUpdate";
 import { AuthContext } from "../../context/Agenda";
 import AwesomeAlert from "react-native-awesome-alerts";
 import { thema } from "../../../thema";
+import React from "react";
 
 
 
@@ -64,7 +65,7 @@ export default function Update() {
 
             />
         
-            <Logo source={require('../../../assets/logo.webp')} />
+            <Logo source={require('../../../assets/logo.png')} />
             <Title>Atualizar agendamento</Title>
             <ConteinerCard >
                 <FlatList

@@ -1,13 +1,12 @@
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { useNavigation } from "@react-navigation/native";
-import { ButtomSubmit, Conteiner, ConteinerdDateMoney, Input, InputDate, InputMoney, InputNote, Label, TextSubmit } from "./style";
+import { ButtomSubmit, Conteiner,Logo ,ConteinerdDateMoney, Input, InputDate, InputMoney, InputNote, Label, TextSubmit } from "./style";
 import { View } from "react-native";
 import { thema } from "../../../thema";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../context/Agenda";
 import AwesomeAlert from "react-native-awesome-alerts";
-import { Logo } from "../home/styles";
 import React from "react";
 
 interface MyFormValues {
@@ -36,10 +35,7 @@ export default function Add() {
     const { create } = useContext(AuthContext);
     const [showAlert, setShowAlert] = useState<boolean>(false);
 
-    const showAlertHandler = () => {
-        setShowAlert(true);
-    };
-
+   
     const hideAlertHandler = () => {
         setShowAlert(false);
     };
@@ -80,7 +76,7 @@ export default function Add() {
             >
                 {({ handleChange, handleSubmit, handleBlur, values }) => (
                     <Conteiner>
-                        <Logo source={require('../../../assets/logo.webp')} />
+                        <Logo source={require('../../../assets/logo.png')} />
                         <ConteinerdDateMoney>
                             <View style={{ width: '50%' }}>
                                 <Label>Data</Label>

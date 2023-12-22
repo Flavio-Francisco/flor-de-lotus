@@ -6,6 +6,11 @@ export const Conteiner = styled.View`
   align-items: center;
   justify-content: center;
 `;
+export const Logo = styled.Image`
+  width: 200px;
+  height: 200px;
+  margin-top:90px;
+`;
 export const ConteinerdDateMoney = styled.View`
   flex-direction: row;
   justify-content: space-around;

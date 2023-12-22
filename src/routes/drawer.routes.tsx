@@ -7,7 +7,8 @@ import Home from "../screens/home";
 import { thema } from "../../thema.ts";
 import { SafeAreaView, View ,Image,Text} from "react-native";
 import Update from "../screens/update/index.tsx";
-import Stack from "./stak.routes.tsx";
+import React from "react";
+
 
 
 

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "flor-de-lotus",
-    "slug": "flor-de-lotus",
+    "name": "babysitter",
+    "slug": "babysitter",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -22,11 +22,11 @@
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.flavioshow31.flordelotus"
+      "package": "com.flavioshow31.babysitter"
     },
     "extra": {
       "eas": {
-        "projectId": "c3bdb3a0-7bea-4f0d-8b6c-b30083409c7d"
+        "projectId": ""
       }
     }
   }

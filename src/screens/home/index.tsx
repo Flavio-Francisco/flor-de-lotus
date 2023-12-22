@@ -103,7 +103,7 @@ export default function Home() {
     ]
     useFocusEffect(
         React.useCallback(() => {
-          // Seu código aqui, por exemplo:
+        
           console.log( DataArry);
         }, [DataArry])
       );
@@ -135,7 +135,7 @@ export default function Home() {
                 cancelButtonColor={thema.colors.pink}
                 onCancelPressed={hideAlertHandler}
             />
-            <Logo source={require('../../../assets/logo.webp')} />
+            <Logo source={require('../../../assets/logo.png')} />
             <Title>Horários agendados</Title>
             <ConteinerCard >
                 <FlatList
