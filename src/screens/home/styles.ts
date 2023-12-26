@@ -13,11 +13,11 @@ export const Logo = styled.Image`
 `;
 export const ConteinerCard = styled.View`
   width: 90%;
-  height: 580px;
+  height: 500px;
   border-radius: 10px;
   margin: 10px;
   
-  margin-bottom: 5px;
+  margin-bottom: 35px;
 `;
 export const Name = styled.Text`
   align-items: center;

@@ -5,7 +5,7 @@ import { Conteiner, ConteinerCard, Logo, Name, } from './styles';
 import { FlatList } from 'react-native-gesture-handler';
 import CardList from '../../components/CardList';
 
-import { AgendaProps } from '../../utils/Models';
+import { AgendaProps, ChildsRegistrationform } from '../../utils/Models';
 import ModalObs from '../../components/Modal';
 import { Modal } from 'react-native';
 import { Title } from '../update/styles';
@@ -13,6 +13,8 @@ import AwesomeAlert from 'react-native-awesome-alerts';
 import { thema } from '../../../thema';
 import { AuthContext } from '../../context/Agenda';
 import { useFocusEffect } from '@react-navigation/native';
+import CardChild from '../../components/CardChild';
+import { fakeDataArray } from '../../utils/Function';
 
 
 export default function Home() {
@@ -29,8 +31,8 @@ export default function Home() {
     };
 
 
-    const [selectedItem, setSelectedItem] = useState<AgendaProps>();
-    const handleCardPress = (item: AgendaProps) => {
+    const [selectedItem, setSelectedItem] = useState<ChildsRegistrationform>();
+    const handleCardPress = (item: ChildsRegistrationform) => {
         setSelectedItem(item);
         setIsModalSheetOpen(true);
         console.log(selectedItem, isModalOpen);
@@ -139,9 +141,9 @@ export default function Home() {
             <Title>Horários agendados</Title>
             <ConteinerCard >
                 <FlatList
-                    data={DataArry}
-                    keyExtractor={(item: AgendaProps) => (item.id ? item.id.toString() : 'unique-key')}
-                    renderItem={items => <CardList name={items.item.name} date={items.item.date} procedure={items.item.procedure} onCardPress={() => handleCardPress(items.item)} />}
+                    data={fakeDataArray}
+                    keyExtractor={(item: ChildsRegistrationform) => (item.id ? item.id.toString() : 'unique-key')}
+                    renderItem={({item}) => <CardChild age={item?.DateOfBirth} avatar={item.avatar} childGender={item.ChildGender} date={item.date} name={item.nameChild}  onCardPress={()=>handleCardPress(item)}/>}
                 />
             </ConteinerCard>
             <Modal
@@ -150,17 +152,13 @@ export default function Home() {
                 visible={isModalOpen}
                 onRequestClose={closeModal}
             >
-                <ModalObs
-                    date={selectedItem?.date}
-                    name={selectedItem?.name}
-                    procedure={selectedItem?.procedure}
-                    money={selectedItem?.money}
-                    note={selectedItem?.note}
-                    taggert={isModalOpen}
+                 <ModalObs
+                   child={selectedItem}
                     isVisible={false}
                     onHide={closeModal}
+                   
                     deleteTime={showAlertHandler}
-                />
+                /> 
             </Modal>
         </Conteiner>
     );

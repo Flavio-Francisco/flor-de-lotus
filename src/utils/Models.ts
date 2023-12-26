@@ -1,5 +1,6 @@
 export interface AgendaProps {
   id?: string;
+  avatar:string;
   date: string|undefined;
   name: string|undefined;
   procedure: string|undefined;
@@ -10,10 +11,13 @@ export interface AgendaProps {
 export interface ChildsRegistrationform{
   id?: string;
   date: string|undefined;
-  DateOfBirth:string|undefined;
+  avatar:string;
+  ChildGender: boolean;
+  DateOfBirth:string;
   nameChild: string|undefined;
   nameMother: string|undefined;
   nameFather: string|undefined;
+  phone:string|undefined;
   Address:{
     street:string|undefined;
     number:number|undefined;
@@ -32,9 +36,13 @@ export interface ChildsRegistrationform{
     MarmosetType: string|undefined;
   }
   ImportantInformation:{
-    Daily: string|undefined;
-    overnight: string|undefined;
-    travel: string|undefined;
-    stroll: string|undefined;
+    Daily: boolean|undefined;
+    WhichDaily: string|undefined;
+    overnight: boolean|undefined;
+    WhichOvernight: string|undefined;
+    travel: boolean|undefined;
+    WhichTravel: string|undefined;
+    stroll: boolean|undefined;
+    WhichStroll: string|undefined;
   }
 }
