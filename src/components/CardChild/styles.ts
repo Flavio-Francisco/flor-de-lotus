@@ -2,7 +2,7 @@ import styled from "styled-components/native";
 import { thema } from "../../../thema";
 
 export const Conteiner = styled.TouchableOpacity`
-  flex: 1;
+
   align-items: center;
   justify-content: center;
   margin-top: 10px;

@@ -8,6 +8,8 @@ import { thema } from "../../thema.ts";
 import { SafeAreaView, View ,Image,Text} from "react-native";
 import Update from "../screens/update/index.tsx";
 import React from "react";
+import Stack from "./stak.routes.tsx";
+import Register from "../screens/register/index.tsx";
 
 
 
@@ -65,7 +67,7 @@ export default function Drawer() {
                 name="Nova Reseva"
                 component={Add}
                 options={{
-                    drawerIcon: ({ size, color }) => <Feather name="activity" size={size} color={thema.colors.white} />,
+                    drawerIcon: ({ size, color }) => <Feather name="save" size={size} color={thema.colors.white} />,
                     drawerLabel: "Nova Reseva",
                     drawerLabelStyle:{
                         color:thema.colors.white
@@ -78,6 +80,19 @@ export default function Drawer() {
                 options={{
                     drawerIcon: ({ size, color }) => <Feather name="upload-cloud" size={size} color={thema.colors.white} />,
                     drawerLabel: "Atalizar Agendamento",
+                    drawerLabelStyle:{
+                        color:thema.colors.white
+                    }
+
+                }}
+
+            />
+                 <Screen
+                name="Register"
+                component={Register}
+                options={{
+                    drawerIcon: ({ size, color }) => <Feather name="smile" size={size} color={thema.colors.white} />,
+                    drawerLabel: "Lisda de crianças",
                     drawerLabelStyle:{
                         color:thema.colors.white
                     }

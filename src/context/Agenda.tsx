@@ -1,15 +1,23 @@
 import React, { useEffect } from "react";
 import { ReactNode, SetStateAction, createContext, useState } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AgendaProps, ChildsRegistrationform } from "../utils/Models";
-import { v4 as uuidv4 } from 'uuid';
+import { ChildsRegistrationform } from "../utils/Models";
+import { date } from "yup";
+import moment from "moment";
+
 
 export interface AuthContextDataProps {
   DataArry: ChildsRegistrationform[];
+  records: ChildsRegistrationform[];
   create: (data: ChildsRegistrationform) => void;
   deleteData: (itemId: string) => void;
-  updateData: (data: ChildsRegistrationform) => void
-  setAvatar: (data:ChildsRegistrationform) => void
+  deleteDataList: (itemId: string) => void;
+  updateData: (data: ChildsRegistrationform) => void;
+  setAvatar: (data: ChildsRegistrationform) => void;
+  register: (data: ChildsRegistrationform) => Promise<void>;
+  updateList: (data: ChildsRegistrationform) => void;
+  valadation: boolean;
+  setValidation: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 interface AuthContextProviderProps {
@@ -23,12 +31,14 @@ export const AuthContext = createContext({} as AuthContextDataProps);
 
 export function AuthContextProvider({ children }: AuthContextProviderProps) {
   const [DataArry, setDataArry] = useState<ChildsRegistrationform[]>([]);
+  const [records, setRecords] = useState<ChildsRegistrationform[]>([]);
+  const [valadation, setValidation] = useState(false)
 
   useEffect(() => {
     async function loadStorageData() {
       const storagedUser = await AsyncStorage.getItem("userData");
 
-      console.log(storagedUser);
+
 
       if (storagedUser) {
         const parsedData = JSON.parse(storagedUser);
@@ -36,7 +46,20 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       }
     }
 
+    async function loadStorageData2() {
+      const storagedUser = await AsyncStorage.getItem("Data");
+
+      console.log(storagedUser);
+
+      if (storagedUser) {
+        const parsedData = JSON.parse(storagedUser);
+        setRecords(parsedData);
+      }
+    }
+
+    loadStorageData2();
     loadStorageData();
+    
   }, []);
 
   let idCounter = 1;
@@ -53,7 +76,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     idCounter += 1;
     return newId;
   }
-  async function create(data:ChildsRegistrationform) {
+  async function create(data: ChildsRegistrationform) {
     if (data) {
       const existingIds = DataArry.map(item => item.id ?? '');
       const dataWithId = { ...data, id: generateSequentialId(existingIds) };
@@ -67,35 +90,94 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       }
     }
   }
+  async function register(data: ChildsRegistrationform) {
+    if (data) {
+      const existingIds = records.map(item => item.id ?? '');
+      const dataWithId = { ...data, id: generateSequentialId(existingIds) };
+      try {
+        const updatedDataArry = [...records, dataWithId];
+        await AsyncStorage.setItem('userData', JSON.stringify(updatedDataArry));
+        setRecords(updatedDataArry);
+
+      } catch (error) {
+        console.error("Error storing user data in AsyncStorage:", error);
+      }
+    }
+  }
+
+
   async function updateData(data: ChildsRegistrationform) {
-
     try {
+      // Gerar um novo ID único com base no timestamp
+      const novoId = Date.now().toString();
 
+      // Adiciona o novo item ao array com o novo ID
+      const updatedDataArry = [...DataArry, { ...data, id: novoId }];
 
-      const updatedDataArry = DataArry.map(item => (item.id === data.id ? data : item));
-
-      console.log("DataArry após mapeamento:", updatedDataArry);
+      console.log("DataArry após adição do novo item:", updatedDataArry);
 
       // Atualiza AsyncStorage antes de manipular o estado local
       await AsyncStorage.setItem('userData', JSON.stringify(updatedDataArry));
 
-
-
       // Atualizando DataArry sempre, independentemente da comparação
       setDataArry(updatedDataArry);
-
-
     } catch (error) {
       console.error("Erro ao atualizar dados do usuário no AsyncStorage:", error);
     }
   }
-  function setAvatar(data:ChildsRegistrationform) {
+
+  async function updateList(data: ChildsRegistrationform) {
+    try {
+      console.log('====================================');
+      console.log('item selecionado', data);
+      console.log('====================================');
+
+      // Ler os registros existentes do AsyncStorage
+      const registrosAntigos = await AsyncStorage.getItem('Data');
+      const registrosAntigosArray = registrosAntigos ? JSON.parse(registrosAntigos) : [];
+
+      // Verificar se já existe um registro com os mesmos dados
+      const registroExistente = registrosAntigosArray.find(
+        (item: { nameChild: string | undefined; DateOfBirth: string | undefined; nameMother: string | undefined; }) =>
+          item.nameChild === data.nameChild &&
+          item.DateOfBirth === data.DateOfBirth &&
+          item.nameMother === data.nameMother
+      );
+
+      if (registroExistente) {
+        setValidation(true);
+        return;
+      }
+
+      // Gerar um ID único com base no timestamp
+      const novoId = Date.now().toString();
+
+      // Criar um novo item com os dados fornecidos e o novo ID
+      const novoItem = { ...data, id: novoId };
+
+      // Criar um novo array adicionando o novo item aos registros existentes
+      const arrayDadosAtualizado = [...registrosAntigosArray, novoItem];
+
+      console.log('Registros após adição do novo item:', arrayDadosAtualizado);
+
+      // Atualizar o AsyncStorage antes de manipular o estado local
+      await AsyncStorage.setItem('Data', JSON.stringify(arrayDadosAtualizado));
+
+      // Atualizar sempre o array de dados, independentemente da comparação
+      setRecords(arrayDadosAtualizado);
+    } catch (erro) {
+      console.error('Erro ao atualizar dados do usuário no AsyncStorage:', erro);
+    }
+  }
+
+
+  function setAvatar(data: ChildsRegistrationform) {
 
     try {
       let Data: ChildsRegistrationform = {
         avatar: "",
         date: undefined,
-        DateOfBirth: undefined,
+        DateOfBirth: '',
         nameChild: undefined,
         nameMother: undefined,
         nameFather: undefined,
@@ -122,7 +204,8 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
           travel: undefined,
           stroll: undefined
         },
-        ChildGender: undefined
+        ChildGender: undefined,
+        phone: undefined
       };
       Data.avatar = data.avatar;
       AsyncStorage.setItem('userData', JSON.stringify(Data));
@@ -148,6 +231,42 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     }
   }
 
+
+
+  async function dueDate() {
+    try {
+      const currentDate = moment();
+
+      // Filtrar os itens com base na condição de data
+      const updatedDataArry = DataArry.filter(item => {
+        const itemDate = moment(item.date); // Converter a data do item para um objeto moment
+        return itemDate.isAfter(currentDate.add(1, 'day')); // Comparar com a data atual
+      });
+
+      // Atualizar AsyncStorage e o estado local com os dados filtrados
+      await AsyncStorage.setItem('userData', JSON.stringify(updatedDataArry));
+      setDataArry(updatedDataArry);
+
+    } catch (error) {
+      console.error("Error removing user data from AsyncStorage:", error);
+    }
+  }
+
+
+
+  function deleteDataList(itemId: string) {
+    try {
+      const updatedDataArry = DataArry.filter(item => item.id !== itemId);
+      AsyncStorage.setItem('Data', JSON.stringify(updatedDataArry));
+      setRecords(updatedDataArry);
+
+      // Removendo o item de Data se estiver atualmente presente
+
+    } catch (error) {
+      console.error("Error removing user data from AsyncStorage:", error);
+    }
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -155,7 +274,13 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
         deleteData,
         updateData,
         DataArry,
-        setAvatar
+        setAvatar,
+        register,
+        records,
+        updateList,
+        deleteDataList,
+        setValidation,
+        valadation
       }}
     >
 

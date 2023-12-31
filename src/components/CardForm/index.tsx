@@ -1,18 +1,19 @@
-import * as Yup from "yup";
+
 import { Formik, FormikHelpers, useFormik } from "formik";
 import { useNavigation } from "@react-navigation/native";
-import { ButtomSubmit, Conteiner, Logo, ConteinerdDateMoney, Input, InputDate, InputMoney, InputNote, Label, TextSubmit, Title, TextCheck, InputChek, Icon, Erros } from "./style";
+import { ButtomSubmit, Conteiner, Logo, ConteinerdDateMoney, Input, InputDate, InputMoney, InputNote, Label, TextSubmit, Title, TextCheck, InputChek, Icon, X, TitleX } from "./style";
 import { Switch, View, Image } from "react-native";
 import { colorChold, thema } from "../../../thema";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/Agenda";
 import AwesomeAlert from "react-native-awesome-alerts";
 import React from "react";
 import { ChildsRegistrationform } from "../../utils/Models";
-import Checkbox from "expo-checkbox";
+
 import { RadioButton } from 'react-native-paper';
-import { z } from "zod";
+import { set, z } from "zod";
 import { Check, formatarTelefone } from "../../utils/Function";
+
 
 
 const customBooleanOrString = z
@@ -26,14 +27,16 @@ const MyFormValues = z.object({
         message: 'Data inválida. Por favor, use DD/MM/YYYY.',
     }),
     avatar: z.string().optional(),
-    ChildGender:z.string().optional(),
+    ChildGender: customBooleanOrString.optional(),
     DateOfBirth: z.string().refine(value => !value || /^\d{2}\/\d{2}\/\d{4}$/.test(value), {
         message: 'Data inválida de nascimento. Por favor, use DD/MM/YYYY.',
     }),
     nameChild: z.string().min(1, { message: 'Nome da criança é obrigatório' }),
     nameMother: z.string().min(1, { message: 'Nome da mãe é obrigatório' }),
     nameFather: z.string().min(1, { message: 'Nome do pai é obrigatório' }),
-    phone: z.string().min(1, { message: 'Telefone Obrigatório' }),
+    phone: z.string().refine(value => !value || /^\d{11}$/.test(value), {
+        message: 'Formato de telefone inválido (apenas números)',
+    }),
     Address: z.object({
         street: z.string().min(1, { message: 'Nome da rua é obrigatório' }),
         number: z.string().optional(),
@@ -41,65 +44,73 @@ const MyFormValues = z.object({
         city: z.string().min(1, { message: 'Nome da cidade é obrigatório' }),
     }),
     ChildInformation: z.object({
-        allergy: z.string().optional(),
+        allergy: customBooleanOrString.optional(),
         WhichAllergy: z.string().optional(),
-        DietaryRestriction: z.string().optional(),
+        DietaryRestriction: customBooleanOrString.optional(),
         WhichDietaryRestriction: z.string().optional(),
         //  drug: customBooleanOrString.optional(),
         WhichDrug: z.string().optional(),
-        HealthInsurance: z.string().optional(),
+        HealthInsurance: customBooleanOrString.optional(),
         WhichHealthInsurance: z.string().optional(),
         MarmosetType: z.string().min(1, { message: 'Tipo sanguíneo é obrigatório' }),
     }),
     ImportantInformation: z.object({
         Daily: customBooleanOrString.optional(),
         WhichDaily: z.string().optional(),
-        overnight: z.string().optional(),
+        overnight: customBooleanOrString.optional(),
         WhichOvernight: z.string().optional(),
-        travel: z.string().optional(),
+        travel: customBooleanOrString.optional(),
         WhichTravel: z.string().optional(),
-        stroll: z.string().optional(),
+        stroll: customBooleanOrString.optional(),
         WhichStroll: z.string().optional(),
     }),
 });
-export default function Add() {
+
+
+
+
+interface CardFormProps {
+    props: ChildsRegistrationform | undefined;
+    closeModal: () => void;
+}
+export default function CardForm({ props, closeModal }: CardFormProps) {
     const { navigate } = useNavigation();
 
 
     const FormValues: ChildsRegistrationform = {
-        date: '',
-        avatar: "",
-        ChildGender: undefined,
-        DateOfBirth: "",
-        nameChild: "",
-        nameMother: "",
-        nameFather: "",
-        phone: "",
+        date: "",
+        avatar: '',
+        ChildGender: props?.ChildGender,
+        DateOfBirth: props?.DateOfBirth,
+        nameChild: props?.nameChild,
+        nameMother: props?.nameMother,
+        nameFather: props?.nameFather,
+        phone: props?.phone,
         Address: {
-            street: "",
-            number: '',
-            Neighborhood: "",
-            city: "",
+            street: props?.Address.street,
+            number: props?.Address.number,
+            Neighborhood: props?.Address.Neighborhood,
+            city: props?.Address.city,
         },
         ChildInformation: {
-            allergy: undefined,
-            WhichAllergy: "",
-            DietaryRestriction: undefined,
-            WhichDietaryRestriction: "",
-            drug: undefined,
-            WhichDrug: "",
-            HealthInsurance:undefined,
-            WhichHealthInsurance: "",
-            MarmosetType: "",
+            allergy: props?.ChildInformation.allergy,
+            WhichAllergy: props?.ChildInformation.WhichAllergy,
+            DietaryRestriction: props?.ChildInformation.DietaryRestriction,
+            WhichDietaryRestriction: props?.ChildInformation.WhichDietaryRestriction,
+            drug: props?.ChildInformation.drug,
+            WhichDrug: props?.ChildInformation.WhichDrug,
+            HealthInsurance: props?.ChildInformation.HealthInsurance,
+            WhichHealthInsurance: props?.ChildInformation.WhichHealthInsurance,
+            MarmosetType: props?.ChildInformation.MarmosetType,
         },
         ImportantInformation: {
-            Daily: undefined,
+            Daily: false,
             WhichDaily: "",
-            overnight: undefined,
+            overnight: false,
             WhichOvernight: "",
-            travel:undefined,
+            travel: false,
             WhichTravel: "",
-            stroll:undefined,
+            stroll: false,
             WhichStroll: "",
         }
     };
@@ -107,48 +118,49 @@ export default function Add() {
 
 
 
-    const { create } = useContext(AuthContext);
+    const { updateData } = useContext(AuthContext);
     const [showAlert, setShowAlert] = useState<boolean>(false);
-    const [dietaryRestriction, setDietaryRestriction] = useState(!FormValues.ChildInformation.DietaryRestriction);
-    const [stroll, setStroll] = useState(FormValues.ImportantInformation.stroll);
-    const [allergy, setAllergy] = useState(!FormValues.ChildInformation.allergy);
-    const [health, setHealth] = useState(!FormValues.ChildInformation.HealthInsurance);
-    const [daily, setDaily] = useState(FormValues.ImportantInformation.Daily);
-    const [overnight, setOvernight] = useState(FormValues.ImportantInformation.overnight);
-    const [travel, setTravel] = useState(FormValues.ImportantInformation.travel);
+    const [conf, setConf] = useState<boolean>(false);
+    const [dietaryRestriction, setDietaryRestriction] = useState(FormValues.ChildInformation.DietaryRestriction);
+    const [stroll, setStroll] = useState(false);
+    const [allergy, setAllergy] = useState(FormValues.ChildInformation.allergy);
+    const [health, setHealth] = useState(FormValues.ChildInformation.HealthInsurance);
+    const [daily, setDaily] = useState(false);
+    const [overnight, setOvernight] = useState(false);
+    const [travel, setTravel] = useState(false);
     const [childGender, setChildGender] = useState(FormValues.ChildGender);
 
-    const handleSubmission = async (values: typeof FormValues, actions: FormikHelpers<typeof FormValues>) => {
+    const handleSubmission = async (actions: FormikHelpers<typeof FormValues>) => {
         try {
             // Form submission logic
-            const data = await MyFormValues.parse(values);
-            create(data);
+            // const data = await MyFormValues.parse(values);
+
 
             // Reset the form
             actions.resetForm();
-            setAllergy(false);
-            setChildGender(false);
-            setDietaryRestriction(false);
-            setHealth(false);
-            setOvernight(false);
-            setDaily(false);
-            setStroll(false);
-            setTravel(false);
+
             navigate('Home');
         } catch (error) {
             console.log(error);
             setShowAlert(true)
         }
     };
-
+    useEffect(() => {
+        console.log('====================================');
+        console.log(props?.ChildGender);
+        console.log('====================================');
+    })
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <X onPress={closeModal}>
+                <TitleX style={{ color: colorChold(childGender) }} >X</TitleX>
+            </X >
             <AwesomeAlert
                 show={showAlert}
                 showProgress={false}
                 title="Atenção!"
                 message="Preencha o formulario Corretamente!"
-                
+
                 contentStyle={{ width: 300, height: 100, }}
                 closeOnTouchOutside={true}
                 titleStyle={{ fontSize: 22, textAlign: 'center', color: colorChold(childGender) }}
@@ -162,6 +174,7 @@ export default function Add() {
                 confirmText="Sim"
                 confirmButtonColor={colorChold(childGender)}
                 onConfirmPressed={() => {
+
                     setShowAlert(false)
                 }}
 
@@ -171,39 +184,37 @@ export default function Add() {
             <Formik
                 enableReinitialize={true}
                 initialValues={FormValues}
-                onSubmit={handleSubmission
+                onSubmit={(values, actions) => {
+
+                    if (values) {
+                        updateData(values);
+                        handleSubmission(actions)
+                        setConf(false)
+                        closeModal()
+                    } else {
+                        console.log('====================================');
+                        console.log('deu errado');
+                        console.log('====================================');
+                    }
+                }
                 }
             //   validationSchema={MyFormValues}
             >
-                {({ handleChange, handleSubmit, handleBlur, values, setFieldValue,errors }) => (
+                {({ handleChange, handleSubmit, handleBlur, values, setFieldValue, resetForm }) => (
                     <Conteiner>
+
                         <View style={{ flexDirection: 'row', gap: 3, alignItems: 'center', justifyContent: 'center', marginBottom: 20, marginTop: 30 }}>
 
-                            <Icon
+                            {Check(props?.ChildGender) === false ? <Icon
                                 style={{ backgroundColor: thema.colors.violeta, padding: 30, borderRadius: 25 }}
                                 source={require('../../../assets/menina.png')}
                             />
-                            <View style={{ alignItems: 'center', justifyContent: 'center', width: 30, height: 28, marginRight: 15, marginLeft: 15, }}>
-                                <Switch
 
-                                    trackColor={{ false: thema.colors.violeta, true: thema.colors.blue }}
-                                    thumbColor={values.ChildGender ? thema.colors.white : thema.colors.white}
-                                    value={Check(childGender)}
-
-                                    onValueChange={(e) => {
-                                        setChildGender(e)
-                                        handleChange('ChildGender')(String(e));
-                                        console.log('====================================');
-                                        console.log(e);
-                                        console.log('====================================');
-                                    }}
-                                />
-                            </View>
-
-                            <Icon
-                                style={{ backgroundColor: thema.colors.blue, padding: 30, borderRadius: 25 }}
-                                source={require('../../../assets/menino.png')}
-                            />
+                                :
+                                <Icon
+                                    style={{ backgroundColor: thema.colors.blue, padding: 30, borderRadius: 25 }}
+                                    source={require('../../../assets/menino.png')}
+                                />}
 
 
                         </View>
@@ -227,28 +238,15 @@ export default function Add() {
                                         onBlur={() => handleBlur('date')}
                                         placeholderTextColor={colorChold(childGender)}
                                     />
-                                    {errors.date?<Erros>{errors.date}</Erros>:<></>}
                                 </View>
                                 <View style={{ width: '50%', marginLeft: 7 }}>
                                     <Label style={{ color: colorChold(childGender) }}>Data de nascimento</Label>
                                     <InputDate
                                         style={{ borderColor: colorChold(childGender), color: colorChold(childGender) }}
-
                                         value={values.DateOfBirth}
-                                        placeholder="digite a data "
-                                        onChangeText={(text) => {
-                                            const numericValue = text.replace(/[^\d]/g, '');
-                                            if (numericValue.length <= 8) {
-                                                const formattedValue = numericValue
-                                                    .replace(/(\d{2})(\d{2})(\d{4})/, '$1/$2/$3')
-                                                    .replace(/(\d{2})(\d{2})(\d{4})/, '$1/$2/$3');
-                                                handleChange('DateOfBirth')(formattedValue);
-                                            }
-                                        }}
-                                        onBlur={() => handleBlur('DateOfBirth')}
+                                        editable={false}
                                         placeholderTextColor={colorChold(childGender)}
                                     />
-                                   
                                 </View>
                             </View>
 
@@ -260,20 +258,15 @@ export default function Add() {
                             <Input
                                 style={{ borderColor: colorChold(childGender), color: colorChold(childGender) }}
                                 value={values.nameChild}
-                                placeholder="digite o nome da criança"
-                                onChangeText={handleChange('nameChild')}
-                                onBlur={handleBlur('nameChild')}
+                                editable={false}
                                 placeholderTextColor={colorChold(childGender)} />
-                                
                         </View>
                         <View style={{ width: '96%', marginLeft: 20, marginTop: 10 }}>
                             <Label style={{ color: colorChold(childGender) }}>Nome da mãe</Label>
                             <Input
                                 style={{ borderColor: colorChold(childGender), color: colorChold(childGender) }}
                                 value={values.nameMother}
-                                placeholder="digite o nome da mãe"
-                                onChangeText={handleChange('nameMother')}
-                                onBlur={handleBlur('nameMother')}
+                                editable={false}
                                 placeholderTextColor={colorChold(childGender)} />
                         </View>
                         <View style={{ width: '96%', marginLeft: 20, marginTop: 10 }}>
@@ -281,10 +274,7 @@ export default function Add() {
                             <Input
                                 style={{ borderColor: colorChold(childGender), color: colorChold(childGender) }}
                                 value={values.nameFather}
-                                placeholder="digite o nome do pai"
-                                onChangeText={handleChange('nameFather')}
-                                onBlur={handleBlur('nameFather')}
-
+                                editable={false}
                                 placeholderTextColor={colorChold(childGender)} />
                         </View>
                         <View style={{ width: '96%', marginLeft: 20, marginTop: 10 }}>
@@ -292,10 +282,7 @@ export default function Add() {
                             <Input
                                 style={{ borderColor: colorChold(childGender), color: colorChold(childGender) }}
                                 value={formatarTelefone(values.phone)}
-                                placeholder="digite o número de telefone"
-                                onChangeText={(e)=> handleChange('phone')(e)}
-                                onBlur={handleBlur('phone')}
-
+                                editable={false}
                                 placeholderTextColor={colorChold(childGender)} />
                         </View>
                         <Title style={{ color: colorChold(childGender) }}>Endereço</Title>
@@ -305,9 +292,7 @@ export default function Add() {
                             <Input
                                 style={{ borderColor: colorChold(childGender), color: colorChold(childGender) }}
                                 value={values.Address.street}
-                                placeholder="digite o nome da rua"
-                                onChangeText={handleChange('Address.street')}
-                                onBlur={handleBlur('Address.street')}
+                                editable={false}
                                 placeholderTextColor={colorChold(childGender)} />
                             <View style={{ flexDirection: 'row', marginBottom: 16, justifyContent: 'space-between' }}>
                                 <View>
@@ -315,9 +300,7 @@ export default function Add() {
                                     <Input
                                         style={{ borderColor: colorChold(childGender), color: colorChold(childGender), width: '100%' }}
                                         value={values.Address.Neighborhood}
-                                        placeholder="digite o bairro"
-                                        onChangeText={handleChange('Address.Neighborhood')}
-                                        onBlur={handleBlur('Address.Neighborhood')}
+                                        editable={false}
                                         placeholderTextColor={colorChold(childGender)} />
                                 </View>
                                 <View style={{ marginRight: 70, width: '40%' }}>
@@ -326,9 +309,7 @@ export default function Add() {
                                         style={{ borderColor: colorChold(childGender), color: colorChold(childGender), width: '80%' }}
 
                                         value={values.Address.number !== undefined ? String(values.Address.number) : ''}
-                                        placeholder="Nº"
-                                        onChangeText={handleChange('Address.number')}
-                                        onBlur={handleBlur('Address.number')}
+                                        editable={false}
                                         placeholderTextColor={colorChold(childGender)} />
                                 </View>
                             </View>
@@ -336,9 +317,7 @@ export default function Add() {
                             <Input
                                 style={{ borderColor: colorChold(childGender), color: colorChold(childGender) }}
                                 value={values.Address.city}
-                                placeholder="digite o nome da cidade"
-                                onChangeText={handleChange('Address.city')}
-                                onBlur={handleBlur('Address.city')}
+                                editable={false}
                                 placeholderTextColor={colorChold(childGender)} />
                         </View>
 
@@ -354,15 +333,7 @@ export default function Add() {
                                         trackColor={{ false: 'gray', true: colorChold(childGender) }}
                                         thumbColor={values.ChildInformation.allergy ? thema.colors.white : thema.colors.white}
                                         value={Check(allergy)}
-                                        onValueChange={(e) => {
-                                           
-                                            setAllergy(e)
-                                            
-                                            handleChange('ChildInformation.allergy')(String(e));
-                                            console.log('====================================');
-                                            console.log(e);
-                                            console.log('====================================');
-                                        }}
+
                                     />
                                 </View>
 
@@ -374,9 +345,7 @@ export default function Add() {
                             <Input
                                 style={{ borderColor: colorChold(childGender), color: colorChold(childGender) }}
                                 value={values.ChildInformation.WhichAllergy}
-                                placeholder="digite a alergia "
-                                onChangeText={handleChange('ChildInformation.WhichAllergy')}
-                                onBlur={handleBlur('ChildInformation.WhichAllergy')}
+                                editable={false}
                                 placeholderTextColor={colorChold(childGender)} />
 
                             <View style={{ flexDirection: 'row', gap: 3, marginBottom: 16, marginTop: 16, }}>
@@ -386,12 +355,8 @@ export default function Add() {
                                     <Switch
                                         trackColor={{ false: 'gray', true: colorChold(childGender) }}
                                         thumbColor={values.ChildInformation.HealthInsurance ? thema.colors.white : thema.colors.white}
-                                        value={health}
-                                        onValueChange={(e) => {
-                                            setHealth(e)
-                                            console.log(String(e));
-                                            handleChange('ChildInformation.HealthInsurance')(String(e));
-                                        }}
+                                        value={Check(health)}
+
                                     />
                                 </View>
 
@@ -402,10 +367,7 @@ export default function Add() {
                             <Input
                                 style={{ borderColor: colorChold(childGender), color: colorChold(childGender) }}
                                 value={values.ChildInformation.WhichHealthInsurance}
-
-                                placeholder="digite a alergia "
-                                onChangeText={handleChange('ChildInformation.WhichHealthInsurance')}
-                                onBlur={handleBlur('ChildInformation.WhichHealthInsurance')}
+                                editable={false}
                                 placeholderTextColor={colorChold(childGender)} />
 
                             <View style={{ flexDirection: 'row', gap: 3, marginBottom: 16, marginTop: 16, }}>
@@ -415,12 +377,8 @@ export default function Add() {
                                     <Switch
                                         trackColor={{ false: 'gray', true: colorChold(childGender) }}
                                         thumbColor={values.ChildInformation.DietaryRestriction ? thema.colors.white : thema.colors.white}
-                                        value={dietaryRestriction}
-                                        onValueChange={() => {
-                                            setDietaryRestriction(!dietaryRestriction)
-                                            handleChange('ChildInformation.DietaryRestriction')(String(!dietaryRestriction));
-                                            console.log(String(!dietaryRestriction));
-                                        }}
+                                        value={Check(dietaryRestriction)}
+
                                     />
                                 </View>
                                 <TextCheck style={{ color: colorChold(childGender) }}>sim</TextCheck>
@@ -431,10 +389,7 @@ export default function Add() {
                             <Input
                                 style={{ borderColor: colorChold(childGender), color: colorChold(childGender) }}
                                 value={values.ChildInformation.WhichDietaryRestriction}
-
-                                placeholder="digite a restrição alimentar "
-                                onChangeText={handleChange('ChildInformation.WhichDietaryRestriction')}
-                                onBlur={handleBlur('ChildInformation.WhichDietaryRestriction')}
+                                editable={false}
                                 placeholderTextColor={colorChold(childGender)} />
 
                             <TextCheck style={{ color: colorChold(childGender), marginTop: 20, marginBottom: 10 }}>Tipo sanguíneo</TextCheck>
@@ -442,10 +397,7 @@ export default function Add() {
                             <Input
                                 style={{ borderColor: colorChold(childGender), color: colorChold(childGender) }}
                                 value={values.ChildInformation.MarmosetType}
-
-                                placeholder="digite o tipo sanguíneo "
-                                onChangeText={handleChange('ChildInformation.MarmosetType')}
-                                onBlur={handleBlur('ChildInformation.MarmosetType')}
+                                editable={false}
                                 placeholderTextColor={colorChold(childGender)} />
                         </View>
                         <Title style={{ color: colorChold(childGender) }}>Informação importantes</Title>
@@ -555,10 +507,8 @@ export default function Add() {
                             style={{ backgroundColor: colorChold(childGender) }}
                             onPress={() => {
                                 handleSubmit()
-
-
                             }}>
-                            <TextSubmit>Cadastrar</TextSubmit>
+                            <TextSubmit>Agendar data</TextSubmit>
                         </ButtomSubmit>
 
                     </Conteiner>

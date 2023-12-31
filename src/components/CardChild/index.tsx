@@ -7,24 +7,24 @@ import { View } from 'react-native';
 interface Iprops {
     name: string | undefined;
     date: string | undefined;
-    avatar: string;
-    age: string;
-    childGender: boolean | undefined;
+    avatar: string | undefined;
+    age: string | undefined;
+    childGender: boolean | string | undefined;
     onCardPress: () => void;
 }
 
 export default function CardChild(props: Iprops) {
 
     const date = calcularIdade(props.date);
-    const age = calcularIdadeComAniversario(date)
+    const age = calcularIdadeComAniversario(props.age)
     return (
-        <Conteiner onPress={()=> props.onCardPress()} style={{ borderWidth: 1, borderColor: colorChold(props.childGender), borderRadius: 5 }} >
+        <Conteiner onPress={() => props.onCardPress()} style={{ borderWidth: 1, borderColor: colorChold(props.childGender), borderRadius: 5 }} >
             <ConteinerRow>
                 <ConteinerAvatar>
                     <Avatar source={require('../../../assets/leninha.jpg')} />
                 </ConteinerAvatar>
                 <ConteinerInf>
-                    <Date style={{ color: colorChold(props.childGender) }}>Data: {date}</Date>
+                    <Date style={{ color: colorChold(props.childGender) }}>Data: {props.date}</Date>
                     <Name style={{ color: colorChold(props.childGender) }}>Nome: {props.name}</Name>
                     <Age style={{ color: colorChold(props.childGender) }}>Idade: {age}</Age>
                 </ConteinerInf>

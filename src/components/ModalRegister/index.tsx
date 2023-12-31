@@ -25,15 +25,15 @@ import { AuthContext } from "../../context/Agenda";
 
 interface Ipros {
     isVisible: boolean;
-    onHide: () => void;
+    close: () => void;
     deleteTime: () => void;
-    child: ChildsRegistrationform ;
-    salve:(child: ChildsRegistrationform )=>void;
+    child: ChildsRegistrationform |undefined;
+    salve:( )=>void;
 }
 
-export default function ModalObs({
+export default function ModalRegister({
     deleteTime,
-    onHide,
+    close,
     child,
     salve
 }: Ipros) {
@@ -46,21 +46,18 @@ export default function ModalObs({
     const [travel, setTravel] = useState(Check(child?.ImportantInformation.travel));
     const [stroll, setStroll] = useState(Check(child?.ImportantInformation.stroll));
 
-   
+    
     const { navigate } = useNavigation();
     
 
     const hideModalHandler = () => {
-        onHide();
+        close();
     };
     const ModalHandlerDelete = () => {
         deleteTime();
     };
 
-    const handleRegister = ()=>{
-
-        navigate('Register')
-    }
+   
 
     return (
         <>
@@ -73,7 +70,7 @@ export default function ModalObs({
                 </ConteinerData>
                 <ConteinerData>
                     <TextData style={{ color: colorChold(child?.ChildGender) }}>Data de nascimento: </TextData>
-                    <Data style={{ color: colorChold(child?.ChildGender) }}> {calcularIdade(child?.DateOfBirth)}</Data>
+                    <Data style={{ color: colorChold(child?.ChildGender) }}> {child?.DateOfBirth}</Data>
                 </ConteinerData>
 
                 <ConteinerData>
@@ -232,10 +229,8 @@ export default function ModalObs({
                 <ButtomModal onPress={hideModalHandler} style={{ borderColor: colorChold(child?.ChildGender) }}>
                     <TextButtom style={{ color: colorChold(child?.ChildGender) }}>Fechar</TextButtom>
                 </ButtomModal>
-                <ButtomModal onPress={() => {
-                    salve(child);
-                    handleRegister()}} style={{ backgroundColor: 'green', borderColor: thema.colors.white }}>
-                    <TextButtom>Salvar</TextButtom>
+                <ButtomModal onPress={ salve} style={{ backgroundColor: 'green', borderColor: thema.colors.white }}>
+                    <TextButtom>Agendar</TextButtom>
                 </ButtomModal>
                 <ButtomModalDelete onPress={ModalHandlerDelete} style={{ backgroundColor: 'red', borderColor: thema.colors.white }}>
                     <AntDesign name="delete" size={20} color={thema.colors.white} />

@@ -11,38 +11,38 @@ export interface AgendaProps {
 export interface ChildsRegistrationform{
   id?: string;
   date: string|undefined;
-  avatar:string;
-  ChildGender: boolean;
-  DateOfBirth:string;
+  avatar?:string|undefined;
+  ChildGender?:boolean|string|undefined;
+  DateOfBirth:string|undefined;
   nameChild: string|undefined;
   nameMother: string|undefined;
   nameFather: string|undefined;
   phone:string|undefined;
   Address:{
     street:string|undefined;
-    number:number|undefined;
+    number?:string|undefined;
     Neighborhood:string|undefined;
     city:string|undefined;
   }
   ChildInformation:{
-    allergy: boolean|undefined;
-    WhichAllergy:string|undefined;
-    DietaryRestriction:boolean|undefined;
-    WhichDietaryRestriction:string|undefined;
-    drug: boolean|undefined;
-    WhichDrug:string|undefined;
-    HealthInsurance: boolean|undefined;
-    WhichHealthInsurance: string|undefined;
-    MarmosetType: string|undefined;
+    allergy?: boolean|string|undefined;
+    WhichAllergy?:string|undefined;
+    DietaryRestriction?:boolean|string|undefined;
+    WhichDietaryRestriction?:string|undefined;
+    drug?: boolean|string|undefined;
+    WhichDrug?:string|undefined;
+    HealthInsurance?: boolean|string|undefined;
+    WhichHealthInsurance?: string|undefined;
+    MarmosetType?: string|undefined;
   }
   ImportantInformation:{
-    Daily: boolean|undefined;
-    WhichDaily: string|undefined;
-    overnight: boolean|undefined;
-    WhichOvernight: string|undefined;
-    travel: boolean|undefined;
-    WhichTravel: string|undefined;
-    stroll: boolean|undefined;
-    WhichStroll: string|undefined;
+    Daily?:boolean|string|undefined;
+    WhichDaily?: string|undefined;
+    overnight?: boolean|string|undefined;
+    WhichOvernight?: string|undefined;
+    travel?: boolean|string|undefined;
+    WhichTravel?: string|undefined;
+    stroll?:boolean|string|undefined;
+    WhichStroll?: string|undefined;
   }
 }

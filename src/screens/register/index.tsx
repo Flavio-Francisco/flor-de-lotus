@@ -1,12 +1,11 @@
 
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
-import { Conteiner, ConteinerCard, Logo } from './styles';
+import { Conteiner, ConteinerCard, Logo, Name, } from './styles';
 import { FlatList } from 'react-native-gesture-handler';
+import CardList from '../../components/CardList';
 
-
-import { ChildsRegistrationform } from '../../utils/Models';
-import ModalObs from '../../components/Modal';
+import { AgendaProps, ChildsRegistrationform } from '../../utils/Models';
 import { Modal } from 'react-native';
 import { Title } from '../update/styles';
 import AwesomeAlert from 'react-native-awesome-alerts';
@@ -14,14 +13,18 @@ import { thema } from '../../../thema';
 import { AuthContext } from '../../context/Agenda';
 import { useFocusEffect } from '@react-navigation/native';
 import CardChild from '../../components/CardChild';
-import AlertModal from '../../components/AlertModal';
+import ModalRegister from '../../components/ModalRegister';
+import CardForm from '../../components/CardForm';
 
 
 
-export default function Home() {
+
+export default function Register() {
     const [isModalOpen, setIsModalSheetOpen] = useState(false);
     const [showAlert, setShowAlert] = useState<boolean>(false);
-    const { DataArry, deleteData, updateList, records } = useContext(AuthContext);
+    const [isModalOpen2, setIsModalSheetOpen2] = useState(false);
+    const [showAler2t, setShowAlert2] = useState<boolean>(false);
+    const { deleteDataList, records } = useContext(AuthContext);
     const showAlertHandler = () => {
         setShowAlert(true);
 
@@ -32,15 +35,26 @@ export default function Home() {
     };
 
 
-    const [selectedItem, setSelectedItem] = useState<any>();
-    const handleCardPress = (item: ChildsRegistrationform) => {
+    const [selectedItem, setSelectedItem] = useState<ChildsRegistrationform | undefined>();
+    const handleCardPress = (item: ChildsRegistrationform | undefined) => {
         setSelectedItem(item);
         setIsModalSheetOpen(true);
         console.log(selectedItem, isModalOpen);
 
     };
+    const openModal = () => {
+        closeModal()
+        setShowAlert2(true)
+        setShowAlert(false)
+    }
     const closeModal = () => {
         setIsModalSheetOpen(false);
+
+        // Abrir o segundo modal quando o primeiro modal for fechado
+        setIsModalSheetOpen2(true);
+    };
+    const closeModal2 = () => {
+        setIsModalSheetOpen2(false);
         setSelectedItem(undefined)
     }
 
@@ -48,19 +62,13 @@ export default function Home() {
 
 
     useFocusEffect(
-        useCallback(() => {
-            // Lógica que você deseja executar quando a tela recebe foco
+        React.useCallback(() => {
 
-            // Por exemplo, se você quiser atualizar os dados, você pode chamar a função de busca ou carregar dados aqui
-
-            DataArry
-        }, [updateList])
+            console.log(records);
+        }, [])
     );
     return (
         <Conteiner>
-            <AlertModal
-                ChildGender={selectedItem?.ChildGender}
-            />
             <AwesomeAlert
                 show={showAlert}
                 showProgress={false}
@@ -80,7 +88,7 @@ export default function Home() {
                 confirmButtonColor={thema.colors.pink}
                 onConfirmPressed={() => {
                     hideAlertHandler();
-                    selectedItem?.id && deleteData(selectedItem.id);
+                    selectedItem?.id && deleteDataList(selectedItem.id);
                     closeModal();
                 }}
                 cancelText="Não"
@@ -88,26 +96,42 @@ export default function Home() {
                 onCancelPressed={hideAlertHandler}
             />
             <Logo source={require('../../../assets/logo.png')} />
-            <Title>Horários agendados</Title>
+            <Title>Lista de crianças</Title>
             <ConteinerCard >
                 <FlatList
-                    data={DataArry}
+                    data={records}
                     keyExtractor={(item: ChildsRegistrationform) => (item.id ? item.id.toString() : 'unique-key')}
                     renderItem={({ item }) => <CardChild age={item?.DateOfBirth} avatar={item.avatar} childGender={item.ChildGender} date={item.date} name={item.nameChild} onCardPress={() => handleCardPress(item)} />}
                 />
             </ConteinerCard>
             <Modal
-                animationType="slide"
+
+                animationType="fade"
+                aria-checked
                 transparent={false}
                 visible={isModalOpen}
                 onRequestClose={closeModal}
+
+
             >
-                <ModalObs
-                    salve={(selectedItem) => updateList(selectedItem)}
+                <ModalRegister
                     child={selectedItem}
                     isVisible={false}
-                    onHide={closeModal}
+                    close={() => setIsModalSheetOpen(false)}
                     deleteTime={showAlertHandler}
+                    salve={openModal} />
+            </Modal>
+            <Modal
+                animationType="slide"
+                transparent={false}
+                visible={isModalOpen2}
+                onRequestClose={closeModal2}
+            >
+                <CardForm
+
+                    props={selectedItem}
+                    closeModal={closeModal2}
+
                 />
             </Modal>
         </Conteiner>

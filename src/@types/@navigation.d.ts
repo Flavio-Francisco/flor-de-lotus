@@ -5,6 +5,7 @@ export declare global {
       Add: undefined;
       Update: undefined;
       Agenda:undefined;
+      Register:undefined;
     }
   }
 }

@@ -5,6 +5,8 @@ import Add from "../screens/Add.tsx/index.tsx";
 import Home from "../screens/home/index.tsx";
 import Update from "../screens/update/index.tsx";
 import Drawer from "./drawer.routes.tsx";
+import React from "react";
+import Register from "../screens/register/index.tsx";
 
 
 
@@ -14,15 +16,15 @@ export default function Stack() {
     return (
         <Navigator screenOptions={{
             headerShown: false,
-         
+
         }}
-    
+
         >
-              <Screen
+            <Screen
                 name="Drewer"
                 component={Drawer}
                 options={{
-                    headerShown:false
+                    headerShown: false
 
                 }}
 
@@ -31,7 +33,7 @@ export default function Stack() {
                 name="Home"
                 component={Home}
                 options={{
-                    headerShown:false
+                    headerShown: false
 
                 }}
 
@@ -40,15 +42,24 @@ export default function Stack() {
                 name="Nova Reseva"
                 component={Add}
                 options={{
-                    headerShown:false
+                    headerShown: false
 
                 }}
             />
-                  <Screen
+            <Screen
                 name="Atalizar Agendamento "
                 component={Update}
                 options={{
-                    headerShown:false
+                    headerShown: false
+
+                }}
+
+            />
+            <Screen
+                name="Register"
+                component={Register}
+                options={{
+                    headerShown: false
 
                 }}
 
