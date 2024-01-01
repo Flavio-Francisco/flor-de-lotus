@@ -2,7 +2,7 @@ import * as Yup from "yup";
 import { Formik, FormikHelpers, useFormik } from "formik";
 import { useNavigation } from "@react-navigation/native";
 import { ButtomSubmit, Conteiner, Logo, ConteinerdDateMoney, Input, InputDate, InputMoney, InputNote, Label, TextSubmit, Title, TextCheck, InputChek, Icon, Erros } from "./style";
-import { Switch, View, Image } from "react-native";
+import { Switch, View, Image, Alert, ActivityIndicator } from "react-native";
 import { colorChold, thema } from "../../../thema";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../context/Agenda";
@@ -26,7 +26,7 @@ const MyFormValues = z.object({
         message: 'Data inválida. Por favor, use DD/MM/YYYY.',
     }),
     avatar: z.string().optional(),
-    ChildGender:z.string().optional(),
+    ChildGender: z.string().optional(),
     DateOfBirth: z.string().refine(value => !value || /^\d{2}\/\d{2}\/\d{4}$/.test(value), {
         message: 'Data inválida de nascimento. Por favor, use DD/MM/YYYY.',
     }),
@@ -62,6 +62,52 @@ const MyFormValues = z.object({
         WhichStroll: z.string().optional(),
     }),
 });
+import * as yup from 'yup';
+
+export const MyFormSchema = yup.object().shape({
+    date: yup.string()
+        .required('data é obrigatório')
+        .min(8, "a data deve ter esse formato DD/MM/AAAA"),
+    avatar: yup.string(),
+    ChildGender: yup.string(),
+    DateOfBirth: yup.string()
+        .required('data de nascimento é obrigatório')
+        .min(8, "a data deve ter esse formato DD/MM/AAAA"),
+    nameChild: yup.string().required('Nome da criança é obrigatório'),
+    nameMother: yup.string().required('Nome da mãe é obrigatório'),
+    nameFather: yup.string().required('Nome do pai é obrigatório'),
+    phone: yup.string().required('Telefone Obrigatório'),
+    Address: yup.object().shape({
+        street: yup.string().required('Nome da rua é obrigatório'),
+        number: yup.string(),
+        Neighborhood: yup.string().required('Nome do bairro é obrigatório'),
+        city: yup.string().required('Nome da cidade é obrigatório'),
+    }),
+    ChildInformation: yup.object().shape({
+        allergy: yup.string(),
+        WhichAllergy: yup.string(),
+        DietaryRestriction: yup.string(),
+        WhichDietaryRestriction: yup.string(),
+        drug: yup.string(),
+        WhichDrug: yup.string(),
+        HealthInsurance: yup.string(),
+        WhichHealthInsurance: yup.string(),
+        MarmosetType: yup.string().required('Tipo sanguíneo é obrigatório'),
+    }),
+    ImportantInformation: yup.object().shape({
+        Daily: yup.string(),
+        WhichDaily: yup.string(),
+        overnight: yup.string(),
+        WhichOvernight: yup.string(),
+        travel: yup.string(),
+        WhichTravel: yup.string(),
+        stroll: yup.string(),
+        WhichStroll: yup.string(),
+    }),
+});
+
+
+
 export default function Add() {
     const { navigate } = useNavigation();
 
@@ -88,7 +134,7 @@ export default function Add() {
             WhichDietaryRestriction: "",
             drug: undefined,
             WhichDrug: "",
-            HealthInsurance:undefined,
+            HealthInsurance: undefined,
             WhichHealthInsurance: "",
             MarmosetType: "",
         },
@@ -97,9 +143,9 @@ export default function Add() {
             WhichDaily: "",
             overnight: undefined,
             WhichOvernight: "",
-            travel:undefined,
+            travel: undefined,
             WhichTravel: "",
-            stroll:undefined,
+            stroll: undefined,
             WhichStroll: "",
         }
     };
@@ -109,20 +155,24 @@ export default function Add() {
 
     const { create } = useContext(AuthContext);
     const [showAlert, setShowAlert] = useState<boolean>(false);
-    const [dietaryRestriction, setDietaryRestriction] = useState(!FormValues.ChildInformation.DietaryRestriction);
+    const [dietaryRestriction, setDietaryRestriction] = useState(FormValues.ChildInformation.DietaryRestriction);
     const [stroll, setStroll] = useState(FormValues.ImportantInformation.stroll);
-    const [allergy, setAllergy] = useState(!FormValues.ChildInformation.allergy);
-    const [health, setHealth] = useState(!FormValues.ChildInformation.HealthInsurance);
+    const [allergy, setAllergy] = useState(FormValues.ChildInformation.allergy);
+    const [health, setHealth] = useState(FormValues.ChildInformation.HealthInsurance);
     const [daily, setDaily] = useState(FormValues.ImportantInformation.Daily);
     const [overnight, setOvernight] = useState(FormValues.ImportantInformation.overnight);
     const [travel, setTravel] = useState(FormValues.ImportantInformation.travel);
     const [childGender, setChildGender] = useState(FormValues.ChildGender);
-
+    const [erro, setErro] = useState();
+    const [loading, setLoanding] = useState<boolean>();
+   
     const handleSubmission = async (values: typeof FormValues, actions: FormikHelpers<typeof FormValues>) => {
+       
         try {
+            
             // Form submission logic
-            const data = await MyFormValues.parse(values);
-            create(data);
+            // const data = await MyFormValues.parse(values);
+            create(values);
 
             // Reset the form
             actions.resetForm();
@@ -135,8 +185,10 @@ export default function Add() {
             setStroll(false);
             setTravel(false);
             navigate('Home');
-        } catch (error) {
+            setLoanding(false)
+        } catch (error: any) {
             console.log(error);
+            setErro(error)
             setShowAlert(true)
         }
     };
@@ -147,8 +199,8 @@ export default function Add() {
                 show={showAlert}
                 showProgress={false}
                 title="Atenção!"
-                message="Preencha o formulario Corretamente!"
-                
+                message={erro}
+
                 contentStyle={{ width: 300, height: 100, }}
                 closeOnTouchOutside={true}
                 titleStyle={{ fontSize: 22, textAlign: 'center', color: colorChold(childGender) }}
@@ -173,9 +225,9 @@ export default function Add() {
                 initialValues={FormValues}
                 onSubmit={handleSubmission
                 }
-            //   validationSchema={MyFormValues}
+                validationSchema={MyFormSchema}
             >
-                {({ handleChange, handleSubmit, handleBlur, values, setFieldValue,errors }) => (
+                {({ handleChange, handleSubmit, handleBlur, values, setFieldValue, errors }) => (
                     <Conteiner>
                         <View style={{ flexDirection: 'row', gap: 3, alignItems: 'center', justifyContent: 'center', marginBottom: 20, marginTop: 30 }}>
 
@@ -226,8 +278,9 @@ export default function Add() {
                                         }}
                                         onBlur={() => handleBlur('date')}
                                         placeholderTextColor={colorChold(childGender)}
+
                                     />
-                                    {errors.date?<Erros>{errors.date}</Erros>:<></>}
+                                    {errors.date ? <Erros>{errors.date}</Erros> : <></>}
                                 </View>
                                 <View style={{ width: '50%', marginLeft: 7 }}>
                                     <Label style={{ color: colorChold(childGender) }}>Data de nascimento</Label>
@@ -248,7 +301,7 @@ export default function Add() {
                                         onBlur={() => handleBlur('DateOfBirth')}
                                         placeholderTextColor={colorChold(childGender)}
                                     />
-                                   
+                                    {errors.DateOfBirth ? <Erros>{errors.DateOfBirth}</Erros> : <></>}
                                 </View>
                             </View>
 
@@ -264,7 +317,8 @@ export default function Add() {
                                 onChangeText={handleChange('nameChild')}
                                 onBlur={handleBlur('nameChild')}
                                 placeholderTextColor={colorChold(childGender)} />
-                                
+                            {errors.nameChild ? <Erros>{errors.nameChild}</Erros> : <></>}
+
                         </View>
                         <View style={{ width: '96%', marginLeft: 20, marginTop: 10 }}>
                             <Label style={{ color: colorChold(childGender) }}>Nome da mãe</Label>
@@ -275,6 +329,7 @@ export default function Add() {
                                 onChangeText={handleChange('nameMother')}
                                 onBlur={handleBlur('nameMother')}
                                 placeholderTextColor={colorChold(childGender)} />
+                            {errors.nameMother ? <Erros>{errors.nameMother}</Erros> : <></>}
                         </View>
                         <View style={{ width: '96%', marginLeft: 20, marginTop: 10 }}>
                             <Label style={{ color: colorChold(childGender) }}>Nome do pai</Label>
@@ -286,6 +341,7 @@ export default function Add() {
                                 onBlur={handleBlur('nameFather')}
 
                                 placeholderTextColor={colorChold(childGender)} />
+                            {errors.nameFather ? <Erros>{errors.nameFather}</Erros> : <></>}
                         </View>
                         <View style={{ width: '96%', marginLeft: 20, marginTop: 10 }}>
                             <Label style={{ color: colorChold(childGender) }}>Telefone para contato</Label>
@@ -293,10 +349,10 @@ export default function Add() {
                                 style={{ borderColor: colorChold(childGender), color: colorChold(childGender) }}
                                 value={formatarTelefone(values.phone)}
                                 placeholder="digite o número de telefone"
-                                onChangeText={(e)=> handleChange('phone')(e)}
+                                onChangeText={(e) => handleChange('phone')(e)}
                                 onBlur={handleBlur('phone')}
-
                                 placeholderTextColor={colorChold(childGender)} />
+                            {errors.phone ? <Erros>{errors.phone}</Erros> : <></>}
                         </View>
                         <Title style={{ color: colorChold(childGender) }}>Endereço</Title>
 
@@ -309,6 +365,8 @@ export default function Add() {
                                 onChangeText={handleChange('Address.street')}
                                 onBlur={handleBlur('Address.street')}
                                 placeholderTextColor={colorChold(childGender)} />
+                            {errors.Address?.street ? <Erros>{errors.Address.street}</Erros> : <></>}
+
                             <View style={{ flexDirection: 'row', marginBottom: 16, justifyContent: 'space-between' }}>
                                 <View>
                                     <Label style={{ color: colorChold(childGender) }}>Bairro:</Label>
@@ -319,8 +377,9 @@ export default function Add() {
                                         onChangeText={handleChange('Address.Neighborhood')}
                                         onBlur={handleBlur('Address.Neighborhood')}
                                         placeholderTextColor={colorChold(childGender)} />
+                                    {errors.Address?.Neighborhood ? <Erros>{errors.Address.Neighborhood}</Erros> : <></>}
                                 </View>
-                                <View style={{ marginRight: 70, width: '40%' }}>
+                                <View style={{ marginRight: 20, width: '40%' }}>
                                     <Label style={{ color: colorChold(childGender) }}>Nº:</Label>
                                     <Input
                                         style={{ borderColor: colorChold(childGender), color: colorChold(childGender), width: '80%' }}
@@ -340,6 +399,7 @@ export default function Add() {
                                 onChangeText={handleChange('Address.city')}
                                 onBlur={handleBlur('Address.city')}
                                 placeholderTextColor={colorChold(childGender)} />
+                            {errors.Address?.city ? <Erros>{errors.Address.city}</Erros> : <></>}
                         </View>
 
 
@@ -355,9 +415,9 @@ export default function Add() {
                                         thumbColor={values.ChildInformation.allergy ? thema.colors.white : thema.colors.white}
                                         value={Check(allergy)}
                                         onValueChange={(e) => {
-                                           
+
                                             setAllergy(e)
-                                            
+
                                             handleChange('ChildInformation.allergy')(String(e));
                                             console.log('====================================');
                                             console.log(e);
@@ -386,7 +446,7 @@ export default function Add() {
                                     <Switch
                                         trackColor={{ false: 'gray', true: colorChold(childGender) }}
                                         thumbColor={values.ChildInformation.HealthInsurance ? thema.colors.white : thema.colors.white}
-                                        value={health}
+                                        value={Check(health)}
                                         onValueChange={(e) => {
                                             setHealth(e)
                                             console.log(String(e));
@@ -395,7 +455,7 @@ export default function Add() {
                                     />
                                 </View>
 
-                                <TextCheck style={{ color: colorChold(childGender) }}>não</TextCheck>
+                                <TextCheck style={{ color: colorChold(childGender) }}>sim</TextCheck>
 
                             </View>
 
@@ -415,7 +475,7 @@ export default function Add() {
                                     <Switch
                                         trackColor={{ false: 'gray', true: colorChold(childGender) }}
                                         thumbColor={values.ChildInformation.DietaryRestriction ? thema.colors.white : thema.colors.white}
-                                        value={dietaryRestriction}
+                                        value={Check(dietaryRestriction)}
                                         onValueChange={() => {
                                             setDietaryRestriction(!dietaryRestriction)
                                             handleChange('ChildInformation.DietaryRestriction')(String(!dietaryRestriction));
@@ -447,6 +507,7 @@ export default function Add() {
                                 onChangeText={handleChange('ChildInformation.MarmosetType')}
                                 onBlur={handleBlur('ChildInformation.MarmosetType')}
                                 placeholderTextColor={colorChold(childGender)} />
+                            {errors.ChildInformation?.MarmosetType ? <Erros>{errors.ChildInformation?.MarmosetType}</Erros> : <></>}
                         </View>
                         <Title style={{ color: colorChold(childGender) }}>Informação importantes</Title>
                         <View style={{ borderWidth: 1, borderColor: colorChold(childGender), borderRadius: 5, width: '90%', padding: 10, marginLeft: 16, }}>
@@ -554,11 +615,21 @@ export default function Add() {
                         <ButtomSubmit
                             style={{ backgroundColor: colorChold(childGender) }}
                             onPress={() => {
+                                setLoanding(true)
                                 handleSubmit()
 
 
                             }}>
-                            <TextSubmit>Cadastrar</TextSubmit>
+                            {loading === true ?
+                                <TextSubmit>
+                                    <ActivityIndicator size="small" color="#fff" />
+                                </TextSubmit>
+                                :
+                                <TextSubmit>Cadastrar</TextSubmit>
+                            }
+
+
+
                         </ButtomSubmit>
 
                     </Conteiner>

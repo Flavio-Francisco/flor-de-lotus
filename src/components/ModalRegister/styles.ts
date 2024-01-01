@@ -79,7 +79,7 @@ export const TextData = styled.Text`
   align-items: center;
   font-size: 20px;
   font-weight: bold;
-  color: ${thema.colors.pink};
+  
 `;
 export const TextDataObs = styled.Text`
   align-items: center;

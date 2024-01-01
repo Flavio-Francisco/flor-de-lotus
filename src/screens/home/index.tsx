@@ -53,7 +53,7 @@ export default function Home() {
 
             // Por exemplo, se você quiser atualizar os dados, você pode chamar a função de busca ou carregar dados aqui
 
-            DataArry
+         //   DataArry
         }, [updateList])
     );
     return (
@@ -103,7 +103,10 @@ export default function Home() {
                 onRequestClose={closeModal}
             >
                 <ModalObs
-                    salve={(selectedItem) => updateList(selectedItem)}
+                    salve={(selectedItem) => {
+                        updateList(selectedItem);
+                        closeModal();
+                    }}
                     child={selectedItem}
                     isVisible={false}
                     onHide={closeModal}

@@ -93,17 +93,17 @@ export default function ModalRegister({
                         <TextData style={{ color: colorChold(child?.ChildGender), fontSize: 16 }}>Rua: </TextData>
                         <Data style={{ color: colorChold(child?.ChildGender), fontSize: 16 }}> {child?.Address.street} </Data>
                     </View>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-around', gap: 10, marginTop: 5 }}>
-                        <View style={{ flexDirection: 'row', marginLeft: -15 }}>
+                    <View style={{ flexDirection: 'row', gap: 10, marginTop: 5 }}>
+                        <View style={{ flexDirection: 'row',  }}>
                             <TextData style={{ color: colorChold(child?.ChildGender), fontSize: 16 }}>Bairro:</TextData>
                             <Data style={{ color: colorChold(child?.ChildGender), fontSize: 16 }}>{child?.Address.Neighborhood} </Data>
                         </View>
-                        <View style={{ flexDirection: 'row', marginTop: 5 }}>
-                            <TextData style={{ color: colorChold(child?.ChildGender), fontSize: 16 }}>nº:</TextData>
+                        <View style={{ flexDirection: 'row', }}>
+                            <TextData style={{ color: colorChold(child?.ChildGender), fontSize: 16,marginLeft: 15 }}>nº:</TextData>
                             <Data style={{ color: colorChold(child?.ChildGender), fontSize: 16 }}> {child?.Address.number} </Data>
                         </View>
                     </View>
-                    <View style={{ flexDirection: 'row' }}>
+                    <View style={{ flexDirection: 'row',marginTop: 5  }}>
                         <TextData style={{ color: colorChold(child?.ChildGender), fontSize: 16 }}>Cidade: </TextData>
                         <Data style={{ color: colorChold(child?.ChildGender), fontSize: 16 }}> {child?.Address.city} </Data>
                     </View>

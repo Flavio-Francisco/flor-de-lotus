@@ -77,7 +77,8 @@ export const Title = styled.Text`
 `;
 export const TextData = styled.Text`
   align-items: center;
-  font-size: 20px;
+  font-size: 18px;
+  margin-bottom: 1px;
   font-weight: bold;
   color: ${thema.colors.pink};
 `;
@@ -90,9 +91,8 @@ export const TextDataObs = styled.Text`
   color: ${thema.colors.pink};
 `;
 export const Data = styled.Text`
-  font-size: 20px;
+  font-size: 18px;
   align-items: center;
-  color: ${thema.colors.pink};
 `;
 export const TextCheck = styled.Text`
   font-size: 16px;

@@ -1,7 +1,7 @@
 
 import { DrawerItemList, createDrawerNavigator } from "@react-navigation/drawer";
 import { Feather } from "@expo/vector-icons";
-
+import {MaterialIcons} from '@expo/vector-icons';
 import Add from "../screens/Add.tsx";
 import Home from "../screens/home";
 import { thema } from "../../thema.ts";
@@ -10,6 +10,7 @@ import Update from "../screens/update/index.tsx";
 import React from "react";
 import Stack from "./stak.routes.tsx";
 import Register from "../screens/register/index.tsx";
+import UpdateAvatarUser from "../components/UpdateAvatarUser/index.tsx";
 
 
 
@@ -38,12 +39,12 @@ export default function Drawer() {
                         paddingBottom: 8,
                         marginTop:30
                     }}>
-                        <Image source={require('../../assets/leninha.jpg')} style={{ width: 100, height: 100, borderRadius: 25 }} />
+                        <UpdateAvatarUser/>
                         <Text style={{
                             fontSize: 22,
                             marginVertical: 6,
                             color: thema.colors.white
-                        }}>Leninha </Text>
+                        }}>Nathalia</Text>
                     </View>
                     <DrawerItemList  {...props} />
                 </SafeAreaView>
@@ -55,7 +56,7 @@ export default function Drawer() {
                 component={Home}
                 options={{
                     drawerIcon: ({ size, color }) => <Feather name="home" size={size} color={thema.colors.white} />,
-                    drawerLabel: "Lista de Resevas",
+                    drawerLabel: "Agendamentos",
                     drawerLabelStyle:{
                         color:thema.colors.white
                     }
@@ -68,7 +69,7 @@ export default function Drawer() {
                 component={Add}
                 options={{
                     drawerIcon: ({ size, color }) => <Feather name="save" size={size} color={thema.colors.white} />,
-                    drawerLabel: "Nova Reseva",
+                    drawerLabel: "Novo cadastro",
                     drawerLabelStyle:{
                         color:thema.colors.white
                     }
@@ -78,8 +79,8 @@ export default function Drawer() {
                 name="Atalizar Agendamento "
                 component={Update}
                 options={{
-                    drawerIcon: ({ size, color }) => <Feather name="upload-cloud" size={size} color={thema.colors.white} />,
-                    drawerLabel: "Atalizar Agendamento",
+                    drawerIcon: ({ size, color }) => <MaterialIcons name="add-a-photo" size={24} color={thema.colors.white} />,
+                    drawerLabel: "Atalizar foto da criança",
                     drawerLabelStyle:{
                         color:thema.colors.white
                     }
@@ -92,7 +93,7 @@ export default function Drawer() {
                 component={Register}
                 options={{
                     drawerIcon: ({ size, color }) => <Feather name="smile" size={size} color={thema.colors.white} />,
-                    drawerLabel: "Lisda de crianças",
+                    drawerLabel: "Lista de crianças",
                     drawerLabelStyle:{
                         color:thema.colors.white
                     }

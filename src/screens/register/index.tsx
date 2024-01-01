@@ -9,7 +9,7 @@ import { AgendaProps, ChildsRegistrationform } from '../../utils/Models';
 import { Modal } from 'react-native';
 import { Title } from '../update/styles';
 import AwesomeAlert from 'react-native-awesome-alerts';
-import { thema } from '../../../thema';
+import { colorChold, thema } from '../../../thema';
 import { AuthContext } from '../../context/Agenda';
 import { useFocusEffect } from '@react-navigation/native';
 import CardChild from '../../components/CardChild';
@@ -23,7 +23,7 @@ export default function Register() {
     const [isModalOpen, setIsModalSheetOpen] = useState(false);
     const [showAlert, setShowAlert] = useState<boolean>(false);
     const [isModalOpen2, setIsModalSheetOpen2] = useState(false);
-    const [showAler2t, setShowAlert2] = useState<boolean>(false);
+    const [showAler2, setShowAlert2] = useState<boolean>(false);
     const { deleteDataList, records } = useContext(AuthContext);
     const showAlertHandler = () => {
         setShowAlert(true);
@@ -76,23 +76,25 @@ export default function Register() {
 
                 contentStyle={{ width: 300, height: 100, }}
                 closeOnTouchOutside={true}
-                titleStyle={{ fontSize: 22, textAlign: 'center', color: thema.colors.pink }}
-                messageStyle={{ fontSize: 20, color: thema.colors.pink }}
+                titleStyle={{ fontSize: 22, textAlign: 'center', color: colorChold(selectedItem?.ChildGender) }}
+                messageStyle={{ fontSize: 20, color: colorChold(selectedItem?.ChildGender) }}
                 closeOnHardwareBackPress={false}
-                cancelButtonStyle={{ width: 100, alignItems: 'center', marginTop: 10, borderWidth: 1, borderColor: thema.colors.pink, }}
+                cancelButtonStyle={{ width: 100, alignItems: 'center', marginTop: 10, borderWidth: 1, borderColor: colorChold(selectedItem?.ChildGender), }}
                 confirmButtonStyle={{ width: 100, alignItems: 'center', marginLeft: 25, }}
                 cancelButtonTextStyle={{ color: thema.colors.white }}
                 showCancelButton={true}
                 showConfirmButton={true}
                 confirmText="Sim"
-                confirmButtonColor={thema.colors.pink}
+                confirmButtonColor={colorChold(selectedItem?.ChildGender)}
                 onConfirmPressed={() => {
                     hideAlertHandler();
                     selectedItem?.id && deleteDataList(selectedItem.id);
-                    closeModal();
+                    setIsModalSheetOpen2(false);
+                    setIsModalSheetOpen(false);
+                    setShowAlert(false);
                 }}
                 cancelText="Não"
-                cancelButtonColor={thema.colors.pink}
+                cancelButtonColor={colorChold(selectedItem?.ChildGender)}
                 onCancelPressed={hideAlertHandler}
             />
             <Logo source={require('../../../assets/logo.png')} />

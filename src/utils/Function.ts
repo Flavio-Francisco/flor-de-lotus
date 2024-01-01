@@ -124,7 +124,7 @@ export function formatarTelefone(telefone: string | undefined): string {
   // Aplicar a máscara (xx) xxxx-xxxx
   const parte1 = numeros?.slice(0, 2);
   const parte2 = numeros?.slice(2, 7);
-  const parte3 = numeros?.slice(6, 10);
+  const parte3 = numeros?.slice(7, 11);
 
   const telefoneFormatado = `(${parte1}) ${parte2}-${parte3}`;
 
@@ -134,7 +134,7 @@ export function formatarTelefone(telefone: string | undefined): string {
 export function Check(data: boolean | string | undefined) {
   if (data === true || data === "true") {
     return true;
-  } else if (data === undefined) {
+  } else if (data === undefined || data ==="") {
     return false;
   } else {
     return false;

@@ -21,7 +21,9 @@ export default function CardChild(props: Iprops) {
         <Conteiner onPress={() => props.onCardPress()} style={{ borderWidth: 1, borderColor: colorChold(props.childGender), borderRadius: 5 }} >
             <ConteinerRow>
                 <ConteinerAvatar>
-                    <Avatar source={require('../../../assets/leninha.jpg')} />
+                    <Avatar source={props.avatar ? { uri: props.avatar } : require('../../../assets/foto.jpg')}
+                        style={{ backgroundColor: colorChold(props.childGender) }}
+                    />
                 </ConteinerAvatar>
                 <ConteinerInf>
                     <Date style={{ color: colorChold(props.childGender) }}>Data: {props.date}</Date>

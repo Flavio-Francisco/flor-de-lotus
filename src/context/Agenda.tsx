@@ -13,11 +13,14 @@ export interface AuthContextDataProps {
   deleteData: (itemId: string) => void;
   deleteDataList: (itemId: string) => void;
   updateData: (data: ChildsRegistrationform) => void;
-  setAvatar: (data: ChildsRegistrationform) => void;
+  setAvatar: (itemId: string | undefined, newAvatar: string, child: ChildsRegistrationform | undefined) => void;
   register: (data: ChildsRegistrationform) => Promise<void>;
   updateList: (data: ChildsRegistrationform) => void;
   valadation: boolean;
   setValidation: React.Dispatch<React.SetStateAction<boolean>>
+  user: string | undefined;
+  AvatarUser: (data: string | undefined) => void;
+
 }
 
 interface AuthContextProviderProps {
@@ -33,7 +36,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   const [DataArry, setDataArry] = useState<ChildsRegistrationform[]>([]);
   const [records, setRecords] = useState<ChildsRegistrationform[]>([]);
   const [valadation, setValidation] = useState(false)
-
+  const [user, setUser] = useState<string>()
   useEffect(() => {
     async function loadStorageData() {
       const storagedUser = await AsyncStorage.getItem("userData");
@@ -43,6 +46,14 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       if (storagedUser) {
         const parsedData = JSON.parse(storagedUser);
         setDataArry(parsedData);
+      }
+    }
+    async function imageUser() {
+      const storagedUser = await AsyncStorage.getItem("user");
+
+      if (storagedUser) {
+        const parsedData = JSON.parse(storagedUser);
+        setUser(parsedData);
       }
     }
 
@@ -56,10 +67,10 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
         setRecords(parsedData);
       }
     }
-
+    imageUser();
     loadStorageData2();
     loadStorageData();
-    
+    //clearDataArry()
   }, []);
 
   let idCounter = 1;
@@ -98,6 +109,19 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
         const updatedDataArry = [...records, dataWithId];
         await AsyncStorage.setItem('userData', JSON.stringify(updatedDataArry));
         setRecords(updatedDataArry);
+
+      } catch (error) {
+        console.error("Error storing user data in AsyncStorage:", error);
+      }
+    }
+  }
+  async function AvatarUser(data: string | undefined) {
+    if (data) {
+
+      try {
+
+        await AsyncStorage.setItem('user', JSON.stringify(data));
+        setUser(data);
 
       } catch (error) {
         console.error("Error storing user data in AsyncStorage:", error);
@@ -171,48 +195,38 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   }
 
 
-  function setAvatar(data: ChildsRegistrationform) {
-
+  function setAvatar(itemId: string | undefined, newAvatar: string, child: ChildsRegistrationform | undefined) {
     try {
-      let Data: ChildsRegistrationform = {
-        avatar: "",
-        date: undefined,
-        DateOfBirth: '',
-        nameChild: undefined,
-        nameMother: undefined,
-        nameFather: undefined,
-        Address: {
-          street: undefined,
-          number: undefined,
-          Neighborhood: undefined,
-          city: undefined
-        },
-        ChildInformation: {
-          allergy: undefined,
-          WhichAllergy: undefined,
-          DietaryRestriction: undefined,
-          WhichDietaryRestriction: undefined,
-          drug: undefined,
-          WhichDrug: undefined,
-          HealthInsurance: undefined,
-          WhichHealthInsurance: undefined,
-          MarmosetType: undefined
-        },
-        ImportantInformation: {
-          Daily: undefined,
-          overnight: undefined,
-          travel: undefined,
-          stroll: undefined
-        },
-        ChildGender: undefined,
-        phone: undefined
-      };
-      Data.avatar = data.avatar;
-      AsyncStorage.setItem('userData', JSON.stringify(Data));
+      // Atualizar o avatar em DataArry
+      const updatedDataArry = DataArry.map(item => {
+        if (itemId !== undefined && item.id === itemId) {
+          return { ...item, avatar: newAvatar };
+        }
+        return item;
+      });
 
+      // Atualizar o AsyncStorage e o estado local de DataArry
+      AsyncStorage.setItem('userData', JSON.stringify(updatedDataArry));
+      setDataArry(updatedDataArry);
+
+      // Atualizar o avatar em records
+      const updatedRecords = records.map(item => {
+        // Verificar as condições para atualizar o item
+        if (
+          item.DateOfBirth === child?.DateOfBirth && // Substitua pela condição desejada para a data de nascimento
+          item.nameChild === child?.nameChild &&  // Substitua pelo nome da criança desejado
+          item.nameMother === child?.nameMother // Substitua pelo nome da mãe desejado
+        ) {
+          return { ...item, avatar: newAvatar };
+        }
+        return item;
+      });
+
+      // Atualizar o AsyncStorage e o estado local de records
+      AsyncStorage.setItem('Data', JSON.stringify(updatedRecords));
+      setRecords(updatedRecords);
     } catch (error) {
       console.log(error);
-
     }
   }
 
@@ -231,7 +245,18 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     }
   }
 
+  function clearDataArry() {
+    try {
+      // Criar um array vazio para limpar DataArry
+      const emptyDataArry: ChildsRegistrationform[] = [];
 
+      // Atualizar o AsyncStorage e o estado local de DataArry com o array vazio
+      AsyncStorage.setItem('userData', JSON.stringify(emptyDataArry));
+      setDataArry(emptyDataArry);
+    } catch (error) {
+      console.error("Error clearing user data from AsyncStorage:", error);
+    }
+  }
 
   async function dueDate() {
     try {
@@ -280,7 +305,9 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
         updateList,
         deleteDataList,
         setValidation,
-        valadation
+        valadation,
+        user,
+        AvatarUser
       }}
     >
 

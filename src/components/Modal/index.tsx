@@ -73,7 +73,7 @@ export default function ModalObs({
                 </ConteinerData>
                 <ConteinerData>
                     <TextData style={{ color: colorChold(child?.ChildGender) }}>Data de nascimento: </TextData>
-                    <Data style={{ color: colorChold(child?.ChildGender) }}> {calcularIdade(child?.DateOfBirth)}</Data>
+                    <Data style={{ color: colorChold(child?.ChildGender) }}> {child?.DateOfBirth}</Data>
                 </ConteinerData>
 
                 <ConteinerData>
@@ -96,12 +96,12 @@ export default function ModalObs({
                         <TextData style={{ color: colorChold(child?.ChildGender), fontSize: 16 }}>Rua: </TextData>
                         <Data style={{ color: colorChold(child?.ChildGender), fontSize: 16 }}> {child?.Address.street} </Data>
                     </View>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-around', gap: 10, marginTop: 5 }}>
-                        <View style={{ flexDirection: 'row', marginLeft: -15 }}>
-                            <TextData style={{ color: colorChold(child?.ChildGender), fontSize: 16 }}>Bairro:</TextData>
+                    <View style={{ flexDirection: 'row', gap: 10, marginTop: 5 }}>
+                        <View style={{ flexDirection: 'row'  }}>
+                            <TextData style={{ color: colorChold(child?.ChildGender), fontSize: 16 ,}}>Bairro:</TextData>
                             <Data style={{ color: colorChold(child?.ChildGender), fontSize: 16 }}>{child?.Address.Neighborhood} </Data>
                         </View>
-                        <View style={{ flexDirection: 'row', marginTop: 5 }}>
+                        <View style={{ flexDirection: 'row', marginTop: 0,marginLeft: 35 }}>
                             <TextData style={{ color: colorChold(child?.ChildGender), fontSize: 16 }}>nº:</TextData>
                             <Data style={{ color: colorChold(child?.ChildGender), fontSize: 16 }}> {child?.Address.number} </Data>
                         </View>
